@@ -39,14 +39,26 @@ export class LimitlessAPIClient {
 	}
 
 	/**
-	 * Check if user is authenticated
+	 * Check if user is authenticated (cookie exists)
+	 * Note: This only checks cookie existence, not validity.
+	 * Use verifySession() to verify the session is valid.
 	 */
 	async isAuthenticated(): Promise<boolean> {
 		return sessionManager.isAuthenticated();
 	}
 
 	/**
+	 * Verify session is valid and get authenticated user's address
+	 * Automatically clears invalid sessions
+	 * Returns address if valid, null otherwise
+	 */
+	async verifySession(): Promise<string | null> {
+		return sessionManager.verifySession();
+	}
+
+	/**
 	 * Get authenticated user's address
+	 * Does not clear invalid sessions - use verifySession() for that
 	 */
 	async getAuthenticatedAddress(): Promise<string | null> {
 		return sessionManager.getAuthenticatedAddress();

@@ -23,7 +23,7 @@ describe("authLoginTool", () => {
 		account: "0x1234567890123456789012345678901234567890",
 		signingMessage: "Sign this message to authenticate",
 		signature: "0xabcdef...",
-		userData: { name: "Test User" },
+		userData: { client: "eoa" as const },
 	};
 
 	describe("metadata", () => {
@@ -84,7 +84,7 @@ describe("authLoginTool", () => {
 		it("should accept optional userData fields", () => {
 			const result = authLoginTool.parameters.safeParse({
 				...validParams,
-				userData: { name: "Test", email: "test@example.com" },
+				userData: { client: "eoa" },
 			});
 			expect(result.success).toBe(true);
 		});

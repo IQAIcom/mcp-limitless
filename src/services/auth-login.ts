@@ -5,8 +5,7 @@ interface LoginParams {
 	signingMessage: string;
 	signature: string;
 	userData: {
-		name?: string;
-		email?: string;
+		client: string;
 		[key: string]: any;
 	};
 }

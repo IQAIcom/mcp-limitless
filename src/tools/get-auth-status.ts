@@ -13,9 +13,10 @@ export const getAuthStatusTool = {
 	parameters: getAuthStatusParams,
 	execute: async (_params: GetAuthStatusParams) => {
 		try {
-			const isAuthenticated = await client.isAuthenticated();
+			// Verify session and get address (automatically clears invalid sessions)
+			const address = await client.verifySession();
 
-			if (!isAuthenticated) {
+			if (!address) {
 				return `🔒 Not Authenticated
 
 You are not currently logged in to Limitless Exchange.
@@ -27,9 +28,6 @@ To authenticate:
 
 Once authenticated, your session will persist automatically across all tool calls until you LOGOUT.`;
 			}
-
-			// Get the authenticated address
-			const address = await client.getAuthenticatedAddress();
 
 			return `✅ Authenticated
 

@@ -24,7 +24,7 @@ describe("AuthLoginService", () => {
 		account: "0x1234567890123456789012345678901234567890",
 		signingMessage: "Sign this message to authenticate",
 		signature: "0xabcdef...",
-		userData: { name: "Test User", email: "test@example.com" },
+		userData: { client: "eoa" },
 	};
 
 	describe("execute", () => {

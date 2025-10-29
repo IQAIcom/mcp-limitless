@@ -25,8 +25,7 @@ export interface AuthSession {
 export async function authenticateTestWallet(
 	wallet: TestWallet,
 	userData?: {
-		name?: string;
-		email?: string;
+		client?: string;
 		[key: string]: any;
 	},
 ): Promise<AuthSession> {

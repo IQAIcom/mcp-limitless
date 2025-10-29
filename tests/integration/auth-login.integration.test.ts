@@ -150,9 +150,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 					signingMessage: mockSigningMessage,
 					signature: mockSignature,
 					userData: {
-						name: "Test User",
-						email: "test@example.com",
-						customField: "value",
+						client: "eoa",
 					},
 				};
 

@@ -44,12 +44,22 @@ export class SessionManager {
 			);
 		}
 
-		return response.json();
+		// Try to parse as JSON first, fall back to text if it fails
+		const contentType = response.headers.get("content-type");
+		if (contentType?.includes("application/json")) {
+			return response.json();
+		}
+
+		// For text responses (like verify-auth endpoint), return as-is
+		const text = await response.text();
+		return text as T;
 	}
 
 	/**
 	 * Check if there's an active session
 	 * Returns true if a limitless_session cookie exists
+	 * Note: This only checks cookie existence, not validity.
+	 * Use verifySession() or getAuthenticatedAddress() to verify the session is valid.
 	 */
 	async isAuthenticated(): Promise<boolean> {
 		try {
@@ -58,6 +68,36 @@ export class SessionManager {
 		} catch (error) {
 			console.error("Error checking authentication status:", error);
 			return false;
+		}
+	}
+
+	/**
+	 * Verify session is valid by checking both cookie existence and API verification
+	 * Returns the authenticated address if valid, null otherwise
+	 * Automatically clears invalid sessions
+	 */
+	async verifySession(): Promise<string | null> {
+		try {
+			const hasCookie = await this.isAuthenticated();
+			if (!hasCookie) {
+				return null;
+			}
+
+			// Verify with API
+			const address = await this.getAuthenticatedAddress();
+
+			// If cookie exists but API verification fails, clear the invalid session
+			if (!address) {
+				await this.clearSession();
+				return null;
+			}
+
+			return address;
+		} catch (error) {
+			console.error("Error verifying session:", error);
+			// Clear potentially invalid session
+			await this.clearSession();
+			return null;
 		}
 	}
 
