@@ -6,8 +6,8 @@
  * without requiring users to pass tokens manually.
  */
 
-import { CookieJar } from "tough-cookie";
 import fetchCookie from "fetch-cookie";
+import { CookieJar } from "tough-cookie";
 import { LIMITLESS_API_BASE_URL } from "../constants.js";
 
 export class SessionManager {

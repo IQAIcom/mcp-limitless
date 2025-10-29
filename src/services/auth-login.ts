@@ -21,8 +21,7 @@ export class AuthLoginService {
 	async execute(params: LoginParams): Promise<LoginResponse> {
 		try {
 			// Encode signing message as hex to handle newlines in HTTP header
-			const signingMessageHex =
-				"0x" + Buffer.from(params.signingMessage).toString("hex");
+			const signingMessageHex = `0x${Buffer.from(params.signingMessage).toString("hex")}`;
 
 			const headers: Record<string, string> = {
 				"x-account": params.account,

@@ -5,7 +5,6 @@ import { authLoginTool } from "./tools/auth-login.js";
 import { authLogoutTool } from "./tools/auth-logout.js";
 import { authSigningMessageTool } from "./tools/auth-signing-message.js";
 import { authVerifyTool } from "./tools/auth-verify.js";
-import { getAuthStatusTool } from "./tools/get-auth-status.js";
 // Order Management
 import { cancelAllOrdersTool } from "./tools/cancel-all-orders.js";
 import { cancelOrderBatchTool } from "./tools/cancel-order-batch.js";
@@ -15,6 +14,7 @@ import { createOrderTool } from "./tools/create-order.js";
 import { getActiveMarketsByCategoryTool } from "./tools/get-active-markets-by-category.js";
 import { getActiveMarketsTool } from "./tools/get-active-markets.js";
 import { getActiveSlugsTool } from "./tools/get-active-slugs.js";
+import { getAuthStatusTool } from "./tools/get-auth-status.js";
 import { getCategoriesCountTool } from "./tools/get-categories-count.js";
 import { getFeedEventsTool } from "./tools/get-feed-events.js";
 import { getHistoricalPriceTool } from "./tools/get-historical-price.js";
