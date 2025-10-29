@@ -1,5 +1,5 @@
 {
-	"name": "mcp-limitless",
+	"name": "@iqai/mcp-limitless",
 	"version": "0.0.1",
 	"description": "Comprehensive MCP server for Limitless prediction markets - 27 tools for authentication, market data, portfolio management, and trading",
 	"main": "dist/index.js",
