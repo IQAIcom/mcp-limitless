@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { FastMCP } from "fastmcp";
+import { logger } from "./lib/logger.js";
 // Authentication
 import { authLoginTool } from "./tools/auth-login.js";
 import { authLogoutTool } from "./tools/auth-logout.js";
@@ -34,7 +35,7 @@ import { getUserTradedVolumeTool } from "./tools/get-user-traded-volume.js";
 import { searchMarketsTool } from "./tools/search-markets.js";
 
 async function main() {
-	console.log("Initializing Limitless MCP Server...");
+	logger.info("Initializing Limitless MCP Server...");
 
 	const server = new FastMCP({
 		name: "Limitless MCP Server",
@@ -81,57 +82,57 @@ async function main() {
 		await server.start({
 			transportType: "stdio",
 		});
-		console.log("✅ Limitless MCP Server started successfully over stdio.");
-		console.log("   You can now connect to it using an MCP client.");
-		console.log("");
-		console.log("   🔐 Session Management:");
-		console.log(
+		logger.info("✅ Limitless MCP Server started successfully over stdio.");
+		logger.info("   You can now connect to it using an MCP client.");
+		logger.info("");
+		logger.info("   🔐 Session Management:");
+		logger.info(
 			"      - Automatic cookie-based session persistence (like a browser!)",
 		);
-		console.log(
+		logger.info(
 			"      - Once authenticated, session persists across all tool calls",
 		);
-		console.log("      - Check status anytime with GET_AUTH_STATUS tool");
-		console.log("");
-		console.log("   Total Available Tools: 28");
-		console.log("");
-		console.log("   📝 Authentication (5):");
-		console.log(
+		logger.info("      - Check status anytime with GET_AUTH_STATUS tool");
+		logger.info("");
+		logger.info("   Total Available Tools: 28");
+		logger.info("");
+		logger.info("   📝 Authentication (5):");
+		logger.info(
 			"      - GET_AUTH_STATUS, GET_SIGNING_MESSAGE, VERIFY_AUTH, LOGIN, LOGOUT",
 		);
-		console.log("");
-		console.log("   📊 Markets (12):");
-		console.log(
+		logger.info("");
+		logger.info("   📊 Markets (12):");
+		logger.info(
 			"      - SEARCH_MARKETS, GET_MARKET, GET_ACTIVE_MARKETS, GET_ACTIVE_MARKETS_BY_CATEGORY",
 		);
-		console.log(
+		logger.info(
 			"      - GET_CATEGORIES_COUNT, GET_ACTIVE_SLUGS, GET_MARKET_ORDERBOOK, GET_HISTORICAL_PRICE",
 		);
-		console.log(
+		logger.info(
 			"      - GET_FEED_EVENTS, GET_MARKET_EVENTS, GET_LOCKED_BALANCE, GET_USER_ORDERS",
 		);
-		console.log("");
-		console.log("   💼 Portfolio (7):");
-		console.log(
+		logger.info("");
+		logger.info("   💼 Portfolio (7):");
+		logger.info(
 			"      - GET_PORTFOLIO_POSITIONS, GET_PORTFOLIO_TRADES, GET_PORTFOLIO_HISTORY",
 		);
-		console.log(
+		logger.info(
 			"      - GET_PORTFOLIO_POINTS, GET_USER_TRADED_VOLUME, GET_PUBLIC_USER_POSITIONS",
 		);
-		console.log("      - GET_TRADING_ALLOWANCE");
-		console.log("");
-		console.log("   🔄 Trading (4):");
-		console.log(
+		logger.info("      - GET_TRADING_ALLOWANCE");
+		logger.info("");
+		logger.info("   🔄 Trading (4):");
+		logger.info(
 			"      - CREATE_ORDER, CANCEL_ORDER, CANCEL_ORDER_BATCH, CANCEL_ALL_ORDERS",
 		);
 	} catch (error) {
-		console.error("❌ Failed to start Limitless MCP Server:", error);
+		logger.error("❌ Failed to start Limitless MCP Server:", error);
 		process.exit(1);
 	}
 }
 
 main().catch((error) => {
-	console.error(
+	logger.error(
 		"❌ An unexpected error occurred in the Limitless MCP Server:",
 		error,
 	);

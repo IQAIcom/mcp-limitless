@@ -57,7 +57,8 @@
 		"msw": "^2.7.0",
 		"shx": "^0.3.4",
 		"typescript": "^5.8.3",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.4",
+		"winston": "^3.18.3"
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
