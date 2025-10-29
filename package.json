@@ -15,8 +15,14 @@
 		"start": "node dist/index.js",
 		"publish-packages": "pnpm run build && changeset publish",
 		"format": "biome format . --write",
+		"format:check": "biome ci .",
 		"test": "vitest run",
-		"lint": "biome check ."
+		"test:watch": "vitest",
+		"test:unit": "vitest run tests/unit",
+		"test:integration": "vitest run tests/integration",
+		"test:coverage": "vitest run --coverage",
+		"lint": "biome check .",
+		"ci:check": "pnpm run format:check && pnpm test:unit && pnpm run build"
 	},
 	"author": "",
 	"repository": {
@@ -42,8 +48,10 @@
 		"@biomejs/biome": "*",
 		"@changesets/cli": "^2.29.4",
 		"@types/node": "^24.0.3",
+		"@vitest/coverage-v8": "^3.2.4",
 		"husky": "^9.0.0",
 		"lint-staged": "^15.0.0",
+		"msw": "^2.7.0",
 		"shx": "^0.3.4",
 		"typescript": "^5.8.3",
 		"vitest": "^3.2.4"

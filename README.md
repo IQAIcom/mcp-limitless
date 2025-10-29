@@ -1,5 +1,10 @@
 # MCP-Limitless: Model Context Protocol Server for Limitless
 
+[![CI](https://github.com/IQAIcom/mcp-limitless/actions/workflows/ci.yml/badge.svg)](https://github.com/IQAIcom/mcp-limitless/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/IQAIcom/mcp-limitless/actions/workflows/codeql.yml/badge.svg)](https://github.com/IQAIcom/mcp-limitless/actions/workflows/codeql.yml)
+[![npm version](https://img.shields.io/npm/v/mcp-limitless.svg)](https://www.npmjs.com/package/mcp-limitless)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+
 This project implements a comprehensive Model Context Protocol (MCP) server to interact with Limitless, a prediction market platform. It allows MCP-compatible clients (like AI assistants, IDE extensions, or custom applications) to access market data, manage portfolios, execute trades, and authenticate users.
 
 ## Features
@@ -259,14 +264,40 @@ Response:
 
 ### Run Tests
 ```bash
-pnpm run test
+# Run all unit tests
+pnpm test:unit
+
+# Run in watch mode
+pnpm test:watch
+
+# Generate coverage report
+pnpm test:coverage
+
+# Run integration tests (optional)
+pnpm test:integration
+
+# Skip integration tests
+SKIP_INTEGRATION_TESTS=true pnpm test
 ```
+
+See [tests/README.md](tests/README.md) for comprehensive testing documentation.
 
 ### Lint & Format
 ```bash
 pnpm run lint
 pnpm run format
 ```
+
+### CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- ✅ **CI Pipeline**: Automated testing, linting, and building on every push/PR
+- 🔒 **Security**: CodeQL analysis for vulnerability detection
+- 📦 **Publishing**: Automated npm publishing on releases
+- 🤖 **Dependencies**: Automated updates via Dependabot
+
+See [.github/CI.md](.github/CI.md) for detailed CI/CD documentation.
 
 ## Architecture
 
@@ -345,26 +376,24 @@ Tools that require authentication are marked with "(requires authentication)" in
 
 ## Contributing
 
-Contributions are welcome! Here's how to add a new tool:
+Contributions are welcome! Please read our [Contributing Guide](.github/CONTRIBUTING.md) for details on:
 
-1. **Create a service** in `src/services/[tool-name].ts`:
-   - Implement `execute()` method for API interaction
-   - Implement `format()` method for user-friendly output
+- Code of conduct
+- Development workflow
+- Pull request process
+- Coding standards
+- Testing requirements
 
-2. **Create a tool** in `src/tools/[tool-name].ts`:
-   - Define Zod schema for parameter validation
-   - Export tool object with name, description, parameters, and execute function
+### Quick Start for Contributors
 
-3. **Register the tool** in `src/index.ts`:
-   - Import the tool
-   - Call `server.addTool(yourTool)`
+1. Fork and clone the repository
+2. Install dependencies: `pnpm install`
+3. Create a feature branch: `git checkout -b feature/your-feature`
+4. Make your changes and add tests
+5. Run checks: `pnpm run lint && pnpm test:unit && pnpm run build`
+6. Submit a pull request
 
-4. **Test and build**:
-   ```bash
-   pnpm run build
-   pnpm run lint
-   pnpm run test
-   ```
+See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) for complete guidelines.
 
 ## Related Links
 
