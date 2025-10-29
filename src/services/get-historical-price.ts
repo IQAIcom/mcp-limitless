@@ -9,10 +9,8 @@ interface GetHistoricalPriceParams {
 }
 
 interface PricePoint {
-	title: string;
 	timestamp: string;
 	price: number;
-	[key: string]: any;
 }
 
 export class GetHistoricalPriceService {
@@ -27,13 +25,18 @@ export class GetHistoricalPriceService {
 				queryParams.toString() ? `?${queryParams.toString()}` : ""
 			}`;
 
-			const response = await client.request<PricePoint[]>(endpoint);
+			// API returns {title: string, prices: PricePoint[]}
+			const response = await client.request<{
+				title: string;
+				prices: PricePoint[];
+			}>(endpoint);
 
-			if (!response) {
+			if (!response || !response.prices) {
 				throw new Error("Unable to retrieve historical prices");
 			}
 
-			return response;
+			// Return just the prices array
+			return response.prices;
 		} catch (error: any) {
 			throw new Error(`Failed to get historical prices: ${error.message}`);
 		}
@@ -45,8 +48,8 @@ export class GetHistoricalPriceService {
 		}
 
 		const formattedPrices = prices.slice(0, 10).map((point: PricePoint) => {
-			const timestamp = new Date(point.timestamp).toLocaleString();
-			return `- ${timestamp}: ${(point.price * 100).toFixed(2)}¢ (${point.title})`;
+			const timestamp = new Date(Number.parseInt(point.timestamp)).toLocaleString();
+			return `- ${timestamp}: ${(point.price * 100).toFixed(2)}¢`;
 		});
 
 		const hasMore = prices.length > 10;

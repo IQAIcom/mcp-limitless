@@ -31,8 +31,9 @@ export const getIntegrationTestTimeout = (): number => {
 
 /**
  * Rate limiting helper to avoid hitting API rate limits
+ * Increased default delay to 2 seconds to prevent 429 errors
  */
-export const rateLimitDelay = async (ms = 1000): Promise<void> => {
+export const rateLimitDelay = async (ms = 2000): Promise<void> => {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 };
 

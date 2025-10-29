@@ -2,7 +2,8 @@ import dedent from "dedent";
 import { client } from "../lib/client.js";
 
 interface Market {
-	question: string;
+	question?: string;
+	title?: string; // API returns title, map to question
 	slug: string;
 	category?: string;
 	volume?: string;
@@ -35,9 +36,24 @@ export class GetActiveMarketsService {
 				? `/markets/active/${categoryId}?${params.toString()}`
 				: `/markets/active?${params.toString()}`;
 
-			const response = await client.request<ActiveMarketsResponse>(endpoint);
+			// API returns {data: Market[], totalMarketsCount: number}
+			const response = await client.request<{
+				data: Market[];
+				totalMarketsCount: number;
+			}>(endpoint);
 
-			return response;
+			// Transform to expected format and map title to question for backward compatibility
+			const markets = response.data.map((market) => ({
+				...market,
+				question: market.question || market.title,
+			}));
+
+			return {
+				markets,
+				total: response.totalMarketsCount,
+				page: page,
+				limit: limit,
+			};
 		} catch (error: any) {
 			throw new Error(`Failed to get active markets: ${error.message}`);
 		}

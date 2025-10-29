@@ -8,10 +8,14 @@ interface GetMarketEventsParams {
 }
 
 interface MarketEvent {
-	id: string;
-	type: string;
-	timestamp: string;
-	data: any;
+	eventType?: string;
+	type?: string; // For backward compatibility, map eventType to type
+	timestamp?: string;
+	createdAt?: string; // API returns createdAt, map to timestamp
+	data?: {
+		id?: string;
+		[key: string]: any;
+	};
 	[key: string]: any;
 }
 
@@ -39,6 +43,15 @@ export class GetMarketEventsService {
 				throw new Error("Unable to retrieve market events");
 			}
 
+			// Map eventType to type and createdAt to timestamp for backward compatibility
+			if (response.events) {
+				response.events = response.events.map((event) => ({
+					...event,
+					type: event.eventType || event.type || "TRADE",
+					timestamp: event.timestamp || event.createdAt,
+				}));
+			}
+
 			return response;
 		} catch (error: any) {
 			throw new Error(`Failed to get market events: ${error.message}`);
@@ -50,11 +63,12 @@ export class GetMarketEventsService {
 			return `No events found for market: ${slug}`;
 		}
 
-		const formattedEvents = response.events.map((event: MarketEvent) => {
+		const formattedEvents = response.events.slice(0, 10).map((event: MarketEvent) => {
 			const timestamp = new Date(event.timestamp).toLocaleString();
+			const eventId = event.data?.id || "N/A";
 			return dedent`
 				⚡ ${event.type}
-				- ID: ${event.id}
+				- ID: ${eventId}
 				- Time: ${timestamp}
 			`;
 		});

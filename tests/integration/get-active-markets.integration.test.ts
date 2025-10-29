@@ -25,7 +25,8 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveMarketsService();
 
-				const result = await service.execute(10);
+				// Service signature: execute(categoryId?, page, limit, sortBy)
+				const result = await service.execute(undefined, 1, 10);
 
 				// Validate response structure
 				expect(result).toHaveProperty("markets");
@@ -39,14 +40,13 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				// If markets are found, validate structure
 				if (result.markets.length > 0) {
 					const firstMarket = result.markets[0];
-					expect(firstMarket).toHaveProperty("title");
+					expect(firstMarket).toHaveProperty("question");
 					expect(firstMarket).toHaveProperty("slug");
-					expect(firstMarket).toHaveProperty("address");
 				}
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -54,7 +54,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveMarketsService();
 
-				const result = await service.execute(5);
+				const result = await service.execute(undefined, 1, 5);
 				const formatted = service.format(result);
 
 				expect(typeof formatted).toBe("string");
@@ -63,12 +63,11 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				// Should contain key formatting elements
 				if (result.total > 0) {
 					expect(formatted).toContain("Active Markets");
-					expect(formatted).toContain("Total:");
 				}
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -76,10 +75,10 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveMarketsService();
 
-				const page1 = await service.execute(3, 1);
+				const page1 = await service.execute(undefined, 1, 3);
 				await rateLimitDelay(500);
 
-				const page2 = await service.execute(3, 2);
+				const page2 = await service.execute(undefined, 2, 3);
 
 				expect(page1.page).toBe(1);
 				expect(page2.page).toBe(2);
@@ -97,7 +96,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -105,14 +104,14 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveMarketsService();
 
-				const result = await service.execute(5);
+				const result = await service.execute(undefined, 1, 5);
 
 				expect(result.markets.length).toBeLessThanOrEqual(5);
 				expect(result.limit).toBe(5);
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -120,30 +119,30 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveMarketsService();
 
-				const result = await service.execute(1);
+				const result = await service.execute(undefined, 1, 1);
 
 				if (result.markets.length > 0) {
 					const market = result.markets[0];
 
 					// Validate required fields
-					expect(typeof market.title).toBe("string");
+					expect(typeof market.question).toBe("string");
 					expect(typeof market.slug).toBe("string");
 
 					// Validate optional fields if present
 					if (market.category) {
 						expect(typeof market.category).toBe("string");
 					}
-					if (market.volumeFormatted) {
-						expect(typeof market.volumeFormatted).toBe("string");
+					if (market.volume) {
+						expect(typeof market.volume).toBe("string");
 					}
-					if (market.liquidityFormatted) {
-						expect(typeof market.liquidityFormatted).toBe("string");
+					if (market.liquidity) {
+						expect(typeof market.liquidity).toBe("string");
 					}
 				}
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 	},
 );

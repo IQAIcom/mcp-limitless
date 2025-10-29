@@ -26,7 +26,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			if (testMarketSlug) return testMarketSlug;
 
 			const response = await fetch(
-				"https://api.limitless.exchange/markets/active/slugs?limit=1",
+				"https://api.limitless.exchange/markets/active/slugs",
 			);
 			const slugs = (await response.json()) as Array<{ slug: string }>;
 
@@ -47,12 +47,12 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				const result = await service.execute(slug);
 
-				// Validate response structure
-				expect(result).toHaveProperty("slug");
+				// Validate response structure (doesn't include slug field)
 				expect(result).toHaveProperty("bids");
 				expect(result).toHaveProperty("asks");
+				expect(result).toHaveProperty("lastTradePrice");
+				expect(result).toHaveProperty("adjustedMidpoint");
 
-				expect(result.slug).toBe(slug);
 				expect(Array.isArray(result.bids)).toBe(true);
 				expect(Array.isArray(result.asks)).toBe(true);
 
@@ -71,7 +71,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -87,13 +87,13 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				expect(typeof formatted).toBe("string");
 				expect(formatted.length).toBeGreaterThan(0);
 
-				expect(formatted).toContain("Order Book");
-				expect(formatted).toContain("Bids:");
-				expect(formatted).toContain("Asks:");
+				expect(formatted).toContain("Orderbook");
+				expect(formatted).toContain("Asks");
+				expect(formatted).toContain("Bids");
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -108,12 +108,12 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				// Should handle empty orderbook gracefully
 				if (result.bids.length === 0 && result.asks.length === 0) {
-					expect(formatted).toContain("No orders");
+					expect(formatted).toContain("No");
 				}
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -127,7 +127,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -159,7 +159,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 	},
 );

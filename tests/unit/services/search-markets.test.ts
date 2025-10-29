@@ -28,7 +28,20 @@ describe("SearchMarketsService", () => {
 
 	describe("execute", () => {
 		it("should successfully search markets with default parameters", async () => {
-			mockClient.request.mockResolvedValueOnce(searchMarketsSuccessResponse);
+			// Mock API response (only includes markets array)
+			const mockAPIResponse = {
+				markets: searchMarketsSuccessResponse.markets,
+			};
+
+			// Expected service output
+			const expectedOutput = {
+				markets: searchMarketsSuccessResponse.markets,
+				total: 2, // Service sets total to markets.length
+				page: 1,
+				limit: 10,
+			};
+
+			mockClient.request.mockResolvedValueOnce(mockAPIResponse);
 
 			const result = await service.execute("bitcoin");
 
@@ -38,13 +51,26 @@ describe("SearchMarketsService", () => {
 			expect(mockClient.request).toHaveBeenCalledWith(
 				expect.stringContaining("query=bitcoin"),
 			);
-			expect(result).toEqual(searchMarketsSuccessResponse);
+			expect(result).toEqual(expectedOutput);
 			expect(result.markets).toHaveLength(2);
 			expect(result.total).toBe(2);
 		});
 
 		it("should search markets with custom parameters", async () => {
-			mockClient.request.mockResolvedValueOnce(searchMarketsPaginatedResponse);
+			// Mock API response (only includes markets array)
+			const mockAPIResponse = {
+				markets: searchMarketsPaginatedResponse.markets,
+			};
+
+			// Expected service output
+			const expectedOutput = {
+				markets: searchMarketsPaginatedResponse.markets,
+				total: 1, // Service sets total to markets.length
+				page: 2,
+				limit: 1,
+			};
+
+			mockClient.request.mockResolvedValueOnce(mockAPIResponse);
 
 			const result = await service.execute("AI", 1, 2, 0.7);
 
@@ -53,11 +79,16 @@ describe("SearchMarketsService", () => {
 			expect(callArg).toContain("limit=1");
 			expect(callArg).toContain("page=2");
 			expect(callArg).toContain("similarityThreshold=0.7");
-			expect(result).toEqual(searchMarketsPaginatedResponse);
+			expect(result).toEqual(expectedOutput);
 		});
 
 		it("should return empty results when no markets found", async () => {
-			mockClient.request.mockResolvedValueOnce(searchMarketsEmptyResponse);
+			// Mock API response (only includes markets array)
+			const mockAPIResponse = {
+				markets: [],
+			};
+
+			mockClient.request.mockResolvedValueOnce(mockAPIResponse);
 
 			const result = await service.execute("nonexistent query");
 

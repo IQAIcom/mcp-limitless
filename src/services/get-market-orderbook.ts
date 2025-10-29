@@ -11,7 +11,7 @@ interface OrderbookResponse {
 	asks: Order[];
 	bids: Order[];
 	lastTradePrice: number;
-	maxSpread: number;
+	maxSpread: number | string; // Can be string or number
 	minSize: number;
 	tokenId: string;
 }
@@ -51,12 +51,18 @@ export class GetMarketOrderbookService {
 						.join("\n")
 				: "  No bids";
 
+		// Handle maxSpread as string or number
+		const maxSpread =
+			typeof orderbook.maxSpread === "string"
+				? Number.parseFloat(orderbook.maxSpread)
+				: orderbook.maxSpread;
+
 		const formattedOrderbook = dedent`
 			📊 Market Orderbook
 
 			Last Trade Price: ${orderbook.lastTradePrice.toFixed(4)}
 			Adjusted Midpoint: ${orderbook.adjustedMidpoint.toFixed(4)}
-			Max Spread: ${orderbook.maxSpread.toFixed(4)}
+			Max Spread: ${maxSpread.toFixed(4)}
 			Min Size: ${orderbook.minSize}
 
 			📈 Top Asks (Sell Orders):

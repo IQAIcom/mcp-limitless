@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GetMarketService } from "../../../src/services/get-market.js";
 import {
+	marketDetailAPIResponse,
 	marketDetailResolvedResponse,
 	marketDetailSuccessResponse,
 } from "../../helpers/fixtures/index.js";
@@ -27,7 +28,7 @@ describe("GetMarketService", () => {
 
 	describe("execute", () => {
 		it("should get market details by slug", async () => {
-			mockClient.request.mockResolvedValueOnce(marketDetailSuccessResponse);
+			mockClient.request.mockResolvedValueOnce(marketDetailAPIResponse);
 
 			const result = await service.execute("bitcoin-100k-2024");
 
@@ -40,7 +41,7 @@ describe("GetMarketService", () => {
 		});
 
 		it("should get market details by address", async () => {
-			mockClient.request.mockResolvedValueOnce(marketDetailSuccessResponse);
+			mockClient.request.mockResolvedValueOnce(marketDetailAPIResponse);
 
 			const result = await service.execute("0x1234567890abcdef");
 

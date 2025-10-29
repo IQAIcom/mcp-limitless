@@ -8,8 +8,9 @@ interface GetFeedEventsParams {
 }
 
 interface FeedEvent {
-	id: string;
-	type: string;
+	id?: string;
+	eventType: string;
+	type?: string; // For backward compatibility, map eventType to type
 	timestamp: string;
 	data: any;
 	[key: string]: any;
@@ -17,9 +18,9 @@ interface FeedEvent {
 
 interface FeedEventsResponse {
 	events: FeedEvent[];
-	total: number;
-	page: number;
-	limit: number;
+	totalPages?: number; // API returns totalPages, not total
+	page?: number;
+	limit?: number;
 }
 
 export class GetFeedEventsService {
@@ -39,6 +40,14 @@ export class GetFeedEventsService {
 				throw new Error("Unable to retrieve feed events");
 			}
 
+			// Map eventType to type for backward compatibility
+			if (response.events) {
+				response.events = response.events.map((event) => ({
+					...event,
+					type: event.eventType || event.type,
+				}));
+			}
+
 			return response;
 		} catch (error: any) {
 			throw new Error(`Failed to get feed events: ${error.message}`);
@@ -50,11 +59,12 @@ export class GetFeedEventsService {
 			return `No feed events found for market: ${slug}`;
 		}
 
-		const formattedEvents = response.events.map((event: FeedEvent) => {
+		const formattedEvents = response.events.slice(0, 10).map((event: FeedEvent) => {
 			const timestamp = new Date(event.timestamp).toLocaleString();
+			const eventId = event.id || "N/A";
 			return dedent`
 				📰 ${event.type}
-				- ID: ${event.id}
+				- ID: ${eventId}
 				- Time: ${timestamp}
 			`;
 		});
@@ -65,8 +75,8 @@ export class GetFeedEventsService {
 			${formattedEvents.join("\n\n")}
 
 			📊 Summary:
-			- Total Events: ${response.total}
-			- Page: ${response.page}
+			- Total Pages: ${response.totalPages || "N/A"}
+			- Page: ${response.page || 1}
 			- Showing: ${response.events.length} events
 		`;
 	}

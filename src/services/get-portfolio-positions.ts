@@ -52,17 +52,21 @@ export class GetPortfolioPositionsService {
 		}
 
 		const formattedPositions = portfolio.positions.map((position: Position) => {
-			const pnlSign = position.pnl >= 0 ? "+" : "";
+			const pnlSign = position.pnl >= 0 ? "+" : "-";
+			const pnlValue = Math.abs(position.pnl);
+			const pnlPercentValue = Math.abs(position.pnlPercent);
 			return dedent`
                 📍 ${position.market} - ${position.outcome}
                 - Quantity: ${position.quantity}
                 - Avg Price: ${position.avgPrice.toFixed(4)}
                 - Current Price: ${position.currentPrice.toFixed(4)}
-                - P&L: ${pnlSign}$${position.pnl.toFixed(2)} (${pnlSign}${position.pnlPercent.toFixed(2)}%)
+                - P&L: ${pnlSign}$${pnlValue.toFixed(2)} (${pnlSign}${pnlPercentValue.toFixed(2)}%)
             `;
 		});
 
-		const totalPnlSign = portfolio.totalPnl >= 0 ? "+" : "";
+		const totalPnlSign = portfolio.totalPnl >= 0 ? "+" : "-";
+		const totalPnlValue = Math.abs(portfolio.totalPnl);
+		const totalPnlPercentValue = Math.abs(portfolio.totalPnlPercent);
 
 		const formattedPortfolio = dedent`
 			💼 Portfolio Positions
@@ -71,7 +75,7 @@ export class GetPortfolioPositionsService {
 
 			📊 Portfolio Summary:
 			- Total Value: $${portfolio.totalValue.toFixed(2)}
-			- Total P&L: ${totalPnlSign}$${portfolio.totalPnl.toFixed(2)} (${totalPnlSign}${portfolio.totalPnlPercent.toFixed(2)}%)
+			- Total P&L: ${totalPnlSign}$${totalPnlValue.toFixed(2)} (${totalPnlSign}${totalPnlPercentValue.toFixed(2)}%)
 			- Active Positions: ${portfolio.positions.length}
 		`;
 

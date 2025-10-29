@@ -20,8 +20,8 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 		let service: AuthSigningMessageService;
 
-		// Use a valid Ethereum address format for testing
-		const testAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb";
+		// Use a valid Ethereum address format for testing (40 hex chars after 0x)
+		const testAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0";
 
 		it(
 			"should get signing message with nonce",
@@ -37,11 +37,13 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				expect(typeof result.message).toBe("string");
 				expect(typeof result.nonce).toBe("string");
 
-				// Message should contain the address
-				expect(result.message).toContain(testAddress);
+				// Message should contain authentication-related text
+				expect(result.message).toContain("Limitless Exchange");
+				expect(result.message).toContain("Signature");
 
-				// Nonce should be a non-empty string
+				// Nonce should be a non-empty string and start with 0x
 				expect(result.nonce.length).toBeGreaterThan(0);
+				expect(result.nonce).toMatch(/^0x[a-fA-F0-9]+$/);
 
 				await rateLimitDelay();
 			},
@@ -106,8 +108,8 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				const result = await service.execute(testAddress);
 
 				// Message should follow expected format
-				expect(result.message).toMatch(/Sign this message/i);
-				expect(result.message).toContain(testAddress);
+				expect(result.message).toMatch(/Signature/i);
+				expect(result.message).toContain("Limitless Exchange");
 
 				await rateLimitDelay();
 			},

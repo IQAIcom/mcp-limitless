@@ -25,7 +25,8 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveSlugsService();
 
-				const result = await service.execute(10);
+				// Service takes no parameters and returns all slugs
+				const result = await service.execute();
 
 				// Validate response is an array
 				expect(Array.isArray(result)).toBe(true);
@@ -41,7 +42,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 						expect(typeof firstSlug.ticker).toBe("string");
 					}
 					if (firstSlug.strikePrice) {
-						expect(typeof firstSlug.strikePrice).toBe("number");
+						expect(typeof firstSlug.strikePrice).toBe("string");
 					}
 					if (firstSlug.deadline) {
 						expect(typeof firstSlug.deadline).toBe("string");
@@ -50,7 +51,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -58,7 +59,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveSlugsService();
 
-				const result = await service.execute(5);
+				const result = await service.execute();
 				const formatted = service.format(result);
 
 				expect(typeof formatted).toBe("string");
@@ -72,21 +73,22 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
-			"should respect limit parameter",
+			"should return multiple market slugs",
 			async () => {
 				service = new GetActiveSlugsService();
 
-				const result = await service.execute(3);
+				const result = await service.execute();
 
-				expect(result.length).toBeLessThanOrEqual(3);
+				// API returns all active slugs
+				expect(result.length).toBeGreaterThan(0);
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -94,7 +96,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			async () => {
 				service = new GetActiveSlugsService();
 
-				const result = await service.execute(1);
+				const result = await service.execute();
 
 				if (result.length > 0) {
 					const slug = result[0].slug;
@@ -113,7 +115,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 	},
 );

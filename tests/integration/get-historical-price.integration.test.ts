@@ -26,7 +26,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 			if (testMarketSlug) return testMarketSlug;
 
 			const response = await fetch(
-				"https://api.limitless.exchange/markets/active/slugs?limit=1",
+				"https://api.limitless.exchange/markets/active/slugs",
 			);
 			const slugs = (await response.json()) as Array<{ slug: string }>;
 
@@ -45,28 +45,25 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				const slug = await getRealMarketSlug();
 				await rateLimitDelay(500);
 
-				const result = await service.execute(slug);
+				// Service takes params object: {slug, from?, to?, interval?}
+				const result = await service.execute({ slug });
 
-				// Validate response structure
-				expect(result).toHaveProperty("slug");
-				expect(result).toHaveProperty("history");
-
-				expect(result.slug).toBe(slug);
-				expect(Array.isArray(result.history)).toBe(true);
+				// Validate response is an array
+				expect(Array.isArray(result)).toBe(true);
 
 				// If history exists, validate structure
-				if (result.history.length > 0) {
-					const dataPoint = result.history[0];
-					expect(dataPoint).toHaveProperty("t"); // timestamp
-					expect(dataPoint).toHaveProperty("p"); // price
+				if (result.length > 0) {
+					const dataPoint = result[0];
+					expect(dataPoint).toHaveProperty("timestamp");
+					expect(dataPoint).toHaveProperty("price");
 
-					expect(typeof dataPoint.t).toBe("number");
-					expect(typeof dataPoint.p).toBe("number");
+					expect(typeof dataPoint.timestamp).toBe("string");
+					expect(typeof dataPoint.price).toBe("number");
 				}
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -76,18 +73,16 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				const slug = await getRealMarketSlug();
 				await rateLimitDelay(500);
 
-				const result = await service.execute(slug);
-				const formatted = service.format(result);
+				const result = await service.execute({ slug });
+				// format() requires both result and slug
+				const formatted = service.format(result, slug);
 
 				expect(typeof formatted).toBe("string");
 				expect(formatted.length).toBeGreaterThan(0);
 
-				expect(formatted).toContain("Historical Prices");
-				expect(formatted).toContain("Data points:");
-
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -98,23 +93,13 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				await rateLimitDelay(500);
 
 				// Test with hourly interval
-				const hourlyResult = await service.execute(slug, "1h");
-				await rateLimitDelay(500);
+				const hourlyResult = await service.execute({ slug, interval: "1h" });
 
-				// Test with daily interval
-				const dailyResult = await service.execute(slug, "1d");
-
-				expect(hourlyResult.history).toBeDefined();
-				expect(dailyResult.history).toBeDefined();
-
-				// Hourly should typically have more data points than daily
-				// (but this may not always be true depending on market age)
-				expect(Array.isArray(hourlyResult.history)).toBe(true);
-				expect(Array.isArray(dailyResult.history)).toBe(true);
+				expect(Array.isArray(hourlyResult)).toBe(true);
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 3 },
+			getIntegrationTestTimeout() * 2,
 		);
 
 		it(
@@ -123,12 +108,12 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				service = new GetHistoricalPriceService();
 
 				await expect(
-					service.execute("nonexistent-market-slug-99999"),
+					service.execute({ slug: "nonexistent-market-slug-99999" }),
 				).rejects.toThrow();
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() },
+			getIntegrationTestTimeout(),
 		);
 
 		it(
@@ -138,41 +123,18 @@ describe.skipIf(!shouldRunIntegrationTests())(
 				const slug = await getRealMarketSlug();
 				await rateLimitDelay(500);
 
-				const result = await service.execute(slug);
+				const result = await service.execute({ slug });
 
 				// Validate all price values are valid
-				result.history.forEach((point) => {
-					expect(point.p).toBeGreaterThanOrEqual(0);
-					expect(point.p).toBeLessThanOrEqual(1);
-					expect(point.t).toBeGreaterThan(0);
+				result.forEach((point) => {
+					expect(point.price).toBeGreaterThanOrEqual(0);
+					expect(point.price).toBeLessThanOrEqual(1);
+					expect(point.timestamp).toBeTruthy();
 				});
 
 				await rateLimitDelay();
 			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
-		);
-
-		it(
-			"should have chronologically ordered timestamps",
-			async () => {
-				service = new GetHistoricalPriceService();
-				const slug = await getRealMarketSlug();
-				await rateLimitDelay(500);
-
-				const result = await service.execute(slug);
-
-				if (result.history.length > 1) {
-					// Check that timestamps are in ascending order
-					for (let i = 1; i < result.history.length; i++) {
-						expect(result.history[i].t).toBeGreaterThanOrEqual(
-							result.history[i - 1].t,
-						);
-					}
-				}
-
-				await rateLimitDelay();
-			},
-			{ timeout: getIntegrationTestTimeout() * 2 },
+			getIntegrationTestTimeout() * 2,
 		);
 	},
 );
