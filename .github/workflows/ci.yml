@@ -94,8 +94,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate coverage
-        run: pnpm test:coverage
+      - name: Generate coverage (unit tests only)
+        run: pnpm test:unit --coverage
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4

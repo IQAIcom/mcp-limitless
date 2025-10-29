@@ -17,6 +17,11 @@ interface SearchMarketsResponse {
 	limit: number;
 }
 
+// API returns only {markets: Market[]}
+interface SearchMarketsAPIResponse {
+	markets: Market[];
+}
+
 export class SearchMarketsService {
 	async execute(
 		query: string,
@@ -32,11 +37,17 @@ export class SearchMarketsService {
 				similarityThreshold: similarityThreshold.toString(),
 			});
 
-			const response = await client.request<SearchMarketsResponse>(
+			const response = await client.request<SearchMarketsAPIResponse>(
 				`/markets/search?${params.toString()}`,
 			);
 
-			return response;
+			// API doesn't return pagination fields, so we add them
+			return {
+				markets: response.markets || [],
+				total: response.markets?.length || 0,
+				page: page,
+				limit: limit,
+			};
 		} catch (error: any) {
 			throw new Error(`Failed to search markets: ${error.message}`);
 		}
