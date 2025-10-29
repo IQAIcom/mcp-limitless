@@ -59,15 +59,17 @@ export class GetFeedEventsService {
 			return `No feed events found for market: ${slug}`;
 		}
 
-		const formattedEvents = response.events.slice(0, 10).map((event: FeedEvent) => {
-			const timestamp = new Date(event.timestamp).toLocaleString();
-			const eventId = event.id || "N/A";
-			return dedent`
+		const formattedEvents = response.events
+			.slice(0, 10)
+			.map((event: FeedEvent) => {
+				const timestamp = new Date(event.timestamp).toLocaleString();
+				const eventId = event.id || "N/A";
+				return dedent`
 				📰 ${event.type}
 				- ID: ${eventId}
 				- Time: ${timestamp}
 			`;
-		});
+			});
 
 		return dedent`
 			📰 Feed Events for ${slug}

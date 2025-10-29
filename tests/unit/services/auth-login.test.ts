@@ -37,11 +37,15 @@ describe("AuthLoginService", () => {
 
 			const result = await service.execute(validLoginParams);
 
+			// Signing message should be hex-encoded to handle newlines in HTTP headers
+			const expectedHexMessage =
+				"0x" + Buffer.from(validLoginParams.signingMessage).toString("hex");
+
 			expect(mockClient.request).toHaveBeenCalledWith("/auth/login", {
 				method: "POST",
 				headers: {
 					"x-account": validLoginParams.account,
-					"x-signing-message": validLoginParams.signingMessage,
+					"x-signing-message": expectedHexMessage,
 					"x-signature": validLoginParams.signature,
 				},
 				body: validLoginParams.userData,

@@ -90,17 +90,15 @@ describe("GetActiveMarketsByCategoryService", () => {
 		it("should throw error when response is null", async () => {
 			mockClient.request.mockResolvedValueOnce(null);
 
-			await expect(
-				service.execute({ categoryId: 1 }),
-			).rejects.toThrow("Unable to retrieve active markets by category");
+			await expect(service.execute({ categoryId: 1 })).rejects.toThrow(
+				"Unable to retrieve active markets by category",
+			);
 		});
 
 		it("should handle API errors gracefully", async () => {
 			mockClient.request.mockRejectedValueOnce(new Error("Network error"));
 
-			await expect(
-				service.execute({ categoryId: 1 }),
-			).rejects.toThrow(
+			await expect(service.execute({ categoryId: 1 })).rejects.toThrow(
 				"Failed to get active markets by category: Network error",
 			);
 		});
@@ -110,9 +108,9 @@ describe("GetActiveMarketsByCategoryService", () => {
 				new Error("API request failed: 500 Internal Server Error"),
 			);
 
-			await expect(
-				service.execute({ categoryId: 1 }),
-			).rejects.toThrow("Failed to get active markets by category");
+			await expect(service.execute({ categoryId: 1 })).rejects.toThrow(
+				"Failed to get active markets by category",
+			);
 		});
 	});
 

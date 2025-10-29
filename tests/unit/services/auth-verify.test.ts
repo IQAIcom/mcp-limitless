@@ -40,8 +40,9 @@ describe("AuthVerifyService", () => {
 
 			const result = await service.execute(apiKey);
 
+			// Service sends token as session cookie instead of Bearer token
 			expect(mockClient.request).toHaveBeenCalledWith("/auth/verify-auth", {
-				headers: { Authorization: "Bearer test-api-key" },
+				headers: { Cookie: "limitless_session=test-api-key" },
 			});
 			expect(result).toBe(mockAddress);
 		});

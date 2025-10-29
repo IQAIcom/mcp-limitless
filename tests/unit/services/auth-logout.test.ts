@@ -5,6 +5,7 @@ import { AuthLogoutService } from "../../../src/services/auth-logout.js";
 vi.mock("../../../src/lib/client.js", () => ({
 	client: {
 		request: vi.fn(),
+		clearSession: vi.fn(),
 	},
 }));
 
@@ -30,6 +31,7 @@ describe("AuthLogoutService", () => {
 			expect(mockClient.request).toHaveBeenCalledWith("/auth/logout", {
 				method: "POST",
 				headers: {},
+				body: {}, // Empty body required by API
 			});
 			expect(result).toEqual(mockResponse);
 		});
@@ -44,6 +46,7 @@ describe("AuthLogoutService", () => {
 			expect(mockClient.request).toHaveBeenCalledWith("/auth/logout", {
 				method: "POST",
 				headers: { Authorization: "Bearer test-api-key" },
+				body: {}, // Empty body required by API
 			});
 			expect(result).toEqual(mockResponse);
 		});

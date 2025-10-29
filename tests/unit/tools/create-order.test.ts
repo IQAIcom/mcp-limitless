@@ -54,7 +54,9 @@ describe("createOrderTool", () => {
 
 		it("should have a description", () => {
 			expect(createOrderTool.description).toBeTruthy();
-			expect(createOrderTool.description).toContain("Create a buy or sell order");
+			expect(createOrderTool.description).toContain(
+				"Create a buy or sell order",
+			);
 		});
 
 		it("should have parameters schema", () => {

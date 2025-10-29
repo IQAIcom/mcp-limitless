@@ -111,7 +111,9 @@ describe("cancelOrderTool", () => {
 
 		it("should handle authentication errors", async () => {
 			mockExecute.mockRejectedValueOnce(
-				new Error("Unauthorized. You must be authenticated and own this order."),
+				new Error(
+					"Unauthorized. You must be authenticated and own this order.",
+				),
 			);
 
 			const result = await cancelOrderTool.execute(validParams);

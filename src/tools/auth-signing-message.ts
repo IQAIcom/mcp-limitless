@@ -2,7 +2,9 @@ import { z } from "zod";
 import { AuthSigningMessageService } from "../services/auth-signing-message.js";
 
 const authSigningMessageParams = z.object({
-	address: z.string().describe("The wallet address to get a signing message for"),
+	address: z
+		.string()
+		.describe("The wallet address to get a signing message for"),
 });
 
 type AuthSigningMessageParams = z.infer<typeof authSigningMessageParams>;

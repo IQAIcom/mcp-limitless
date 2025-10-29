@@ -3,11 +3,13 @@ import { client } from "../lib/client.js";
 export class AuthVerifyService {
 	async execute(apiKey?: string): Promise<string> {
 		try {
+			// If apiKey provided, use it for backward compatibility
 			const headers: Record<string, string> = {};
 			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
+				headers.Cookie = `limitless_session=${apiKey}`;
 			}
 
+			// Session cookies are automatically sent by the client
 			const response = await client.request<string>("/auth/verify-auth", {
 				headers,
 			});

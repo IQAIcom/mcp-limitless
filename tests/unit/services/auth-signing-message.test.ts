@@ -100,8 +100,7 @@ describe("AuthSigningMessageService", () => {
 
 		it("should handle multiline messages", () => {
 			const response = {
-				message:
-					"Welcome to Limitless!\n\nSign this message to authenticate.",
+				message: "Welcome to Limitless!\n\nSign this message to authenticate.",
 				nonce: "0xxyz789",
 			};
 			const formatted = service.format(response);

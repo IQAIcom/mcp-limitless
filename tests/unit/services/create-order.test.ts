@@ -120,7 +120,9 @@ describe("CreateOrderService", () => {
 
 			const error = await service.execute(validOrderParams).catch((e) => e);
 			expect(error.message).toContain("Invalid order data");
-			expect(error.message).toContain("Check balance, allowance, or market deadline");
+			expect(error.message).toContain(
+				"Check balance, allowance, or market deadline",
+			);
 		});
 
 		it("should handle network errors", async () => {

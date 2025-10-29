@@ -63,15 +63,19 @@ export class GetMarketEventsService {
 			return `No events found for market: ${slug}`;
 		}
 
-		const formattedEvents = response.events.slice(0, 10).map((event: MarketEvent) => {
-			const timestamp = new Date(event.timestamp).toLocaleString();
-			const eventId = event.data?.id || "N/A";
-			return dedent`
+		const formattedEvents = response.events
+			.slice(0, 10)
+			.map((event: MarketEvent) => {
+				const timestamp = event.timestamp
+					? new Date(event.timestamp).toLocaleString()
+					: "N/A";
+				const eventId = event.data?.id || "N/A";
+				return dedent`
 				⚡ ${event.type}
 				- ID: ${eventId}
 				- Time: ${timestamp}
 			`;
-		});
+			});
 
 		return dedent`
 			⚡ Market Events for ${slug}

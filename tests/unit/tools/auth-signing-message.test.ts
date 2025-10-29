@@ -26,9 +26,7 @@ describe("authSigningMessageTool", () => {
 
 		it("should have a description", () => {
 			expect(authSigningMessageTool.description).toBeTruthy();
-			expect(authSigningMessageTool.description).toContain(
-				"signing message",
-			);
+			expect(authSigningMessageTool.description).toContain("signing message");
 		});
 
 		it("should have parameters schema", () => {

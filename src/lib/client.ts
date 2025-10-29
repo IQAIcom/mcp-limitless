@@ -1,4 +1,4 @@
-import { LIMITLESS_API_BASE_URL } from "../constants.js";
+import { sessionManager } from "./session-manager.js";
 
 interface RequestOptions {
 	method?: string;
@@ -6,17 +6,21 @@ interface RequestOptions {
 	body?: any;
 }
 
+/**
+ * Limitless API Client
+ *
+ * This client now uses a session manager with cookie jar support,
+ * allowing automatic session persistence across requests.
+ *
+ * Authentication flow:
+ * 1. User calls LOGIN tool with wallet signature
+ * 2. API returns Set-Cookie header with session
+ * 3. Session automatically persists for all subsequent requests
+ * 4. No need to pass apiKey/token with each request
+ */
 export class LimitlessAPIClient {
-	private baseURL: string;
-
-	constructor(baseURL: string = LIMITLESS_API_BASE_URL) {
-		this.baseURL = baseURL;
-	}
-
 	async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
 		const { method = "GET", headers = {}, body } = options;
-
-		const url = `${this.baseURL}${endpoint}`;
 
 		const fetchOptions: RequestInit = {
 			method,
@@ -30,16 +34,29 @@ export class LimitlessAPIClient {
 			fetchOptions.body = JSON.stringify(body);
 		}
 
-		const response = await fetch(url, fetchOptions);
+		// Use session manager for automatic cookie handling
+		return sessionManager.request<T>(endpoint, fetchOptions);
+	}
 
-		if (!response.ok) {
-			const errorText = await response.text();
-			throw new Error(
-				`API request failed: ${response.status} ${response.statusText} - ${errorText}`,
-			);
-		}
+	/**
+	 * Check if user is authenticated
+	 */
+	async isAuthenticated(): Promise<boolean> {
+		return sessionManager.isAuthenticated();
+	}
 
-		return response.json();
+	/**
+	 * Get authenticated user's address
+	 */
+	async getAuthenticatedAddress(): Promise<string | null> {
+		return sessionManager.getAuthenticatedAddress();
+	}
+
+	/**
+	 * Clear session (logout)
+	 */
+	async clearSession(): Promise<void> {
+		return sessionManager.clearSession();
 	}
 }
 

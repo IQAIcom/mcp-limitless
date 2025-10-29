@@ -48,7 +48,9 @@ export class GetHistoricalPriceService {
 		}
 
 		const formattedPrices = prices.slice(0, 10).map((point: PricePoint) => {
-			const timestamp = new Date(Number.parseInt(point.timestamp)).toLocaleString();
+			const timestamp = new Date(
+				Number.parseInt(point.timestamp),
+			).toLocaleString();
 			return `- ${timestamp}: ${(point.price * 100).toFixed(2)}¢`;
 		});
 

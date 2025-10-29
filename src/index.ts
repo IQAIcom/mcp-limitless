@@ -5,6 +5,7 @@ import { authLoginTool } from "./tools/auth-login.js";
 import { authLogoutTool } from "./tools/auth-logout.js";
 import { authSigningMessageTool } from "./tools/auth-signing-message.js";
 import { authVerifyTool } from "./tools/auth-verify.js";
+import { getAuthStatusTool } from "./tools/get-auth-status.js";
 // Order Management
 import { cancelAllOrdersTool } from "./tools/cancel-all-orders.js";
 import { cancelOrderBatchTool } from "./tools/cancel-order-batch.js";
@@ -41,6 +42,7 @@ async function main() {
 	});
 
 	// Authentication Tools
+	server.addTool(getAuthStatusTool); // Check session status
 	server.addTool(authSigningMessageTool);
 	server.addTool(authVerifyTool);
 	server.addTool(authLoginTool);
@@ -81,10 +83,22 @@ async function main() {
 		});
 		console.log("✅ Limitless MCP Server started successfully over stdio.");
 		console.log("   You can now connect to it using an MCP client.");
-		console.log("   Total Available Tools: 27");
 		console.log("");
-		console.log("   📝 Authentication (4):");
-		console.log("      - GET_SIGNING_MESSAGE, VERIFY_AUTH, LOGIN, LOGOUT");
+		console.log("   🔐 Session Management:");
+		console.log(
+			"      - Automatic cookie-based session persistence (like a browser!)",
+		);
+		console.log(
+			"      - Once authenticated, session persists across all tool calls",
+		);
+		console.log("      - Check status anytime with GET_AUTH_STATUS tool");
+		console.log("");
+		console.log("   Total Available Tools: 28");
+		console.log("");
+		console.log("   📝 Authentication (5):");
+		console.log(
+			"      - GET_AUTH_STATUS, GET_SIGNING_MESSAGE, VERIFY_AUTH, LOGIN, LOGOUT",
+		);
 		console.log("");
 		console.log("   📊 Markets (12):");
 		console.log(
