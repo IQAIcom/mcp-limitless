@@ -5,21 +5,12 @@ interface CancelAllOrdersResponse {
 }
 
 export class CancelAllOrdersService {
-	async execute(
-		slug: string,
-		apiKey?: string,
-	): Promise<CancelAllOrdersResponse> {
+	async execute(slug: string): Promise<CancelAllOrdersResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<CancelAllOrdersResponse>(
 				`/orders/all/${slug}`,
 				{
 					method: "DELETE",
-					headers,
 				},
 			);
 

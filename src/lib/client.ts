@@ -9,14 +9,14 @@ interface RequestOptions {
 /**
  * Limitless API Client
  *
- * This client now uses a session manager with cookie jar support,
+ * This client uses a session manager with cookie jar support,
  * allowing automatic session persistence across requests.
  *
  * Authentication flow:
  * 1. User calls LOGIN tool with wallet signature
  * 2. API returns Set-Cookie header with session
  * 3. Session automatically persists for all subsequent requests
- * 4. No need to pass apiKey/token with each request
+ * 4. Session cookies are handled automatically
  */
 export class LimitlessAPIClient {
 	async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {

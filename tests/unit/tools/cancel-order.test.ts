@@ -21,7 +21,6 @@ describe("cancelOrderTool", () => {
 
 	const validParams = {
 		orderId: "order-123",
-		apiKey: "test-api-key",
 	};
 
 	const mockResponse = {
@@ -55,12 +54,6 @@ describe("cancelOrderTool", () => {
 			expect(result.success).toBe(false);
 		});
 
-		it("should accept optional apiKey", () => {
-			const { apiKey, ...params } = validParams;
-			const result = cancelOrderTool.parameters.safeParse(params);
-			expect(result.success).toBe(true);
-		});
-
 		it("should accept different orderId formats", () => {
 			const result = cancelOrderTool.parameters.safeParse({
 				orderId: "0x123abc456def",
@@ -90,22 +83,8 @@ describe("cancelOrderTool", () => {
 
 			const result = await cancelOrderTool.execute(validParams);
 
-			expect(mockExecute).toHaveBeenCalledWith(
-				validParams.orderId,
-				validParams.apiKey,
-			);
+			expect(mockExecute).toHaveBeenCalledWith(validParams.orderId);
 			expect(mockFormat).toHaveBeenCalledWith(mockResponse);
-			expect(result).toContain("✅ Order cancelled successfully");
-		});
-
-		it("should execute without apiKey", async () => {
-			const { apiKey, ...params } = validParams;
-			mockExecute.mockResolvedValueOnce(mockResponse);
-			mockFormat.mockReturnValueOnce("✅ Order cancelled successfully");
-
-			const result = await cancelOrderTool.execute(params);
-
-			expect(mockExecute).toHaveBeenCalledWith(params.orderId, undefined);
 			expect(result).toContain("✅ Order cancelled successfully");
 		});
 
@@ -195,7 +174,7 @@ describe("cancelOrderTool", () => {
 			});
 
 			expect(result).toBe("✅ Order cancelled");
-			expect(mockExecute).toHaveBeenCalledWith("order-999", undefined);
+			expect(mockExecute).toHaveBeenCalledWith("order-999");
 		});
 	});
 });

@@ -24,16 +24,8 @@ interface HistoryResponse {
 }
 
 export class GetPortfolioHistoryService {
-	async execute(
-		params: GetPortfolioHistoryParams,
-		apiKey?: string,
-	): Promise<HistoryResponse> {
+	async execute(params: GetPortfolioHistoryParams): Promise<HistoryResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const queryParams = new URLSearchParams();
 			queryParams.append("page", params.page.toString());
 			queryParams.append("limit", params.limit.toString());
@@ -42,9 +34,7 @@ export class GetPortfolioHistoryService {
 
 			const endpoint = `/portfolio/history?${queryParams.toString()}`;
 
-			const response = await client.request<HistoryResponse>(endpoint, {
-				headers,
-			});
+			const response = await client.request<HistoryResponse>(endpoint);
 
 			if (!response) {
 				throw new Error("Unable to retrieve portfolio history");

@@ -36,19 +36,10 @@ interface CreateOrderResponse {
 }
 
 export class CreateOrderService {
-	async execute(
-		params: CreateOrderParams,
-		apiKey?: string,
-	): Promise<CreateOrderResponse> {
+	async execute(params: CreateOrderParams): Promise<CreateOrderResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<CreateOrderResponse>("/orders", {
 				method: "POST",
-				headers,
 				body: params,
 			});
 

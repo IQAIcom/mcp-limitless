@@ -42,29 +42,14 @@ describe("GetPortfolioTradesService", () => {
 	};
 
 	describe("execute", () => {
-		it("should successfully get portfolio trades without API key", async () => {
+		it("should successfully get portfolio trades", async () => {
 			mockClient.request.mockResolvedValueOnce(mockTradesResponse);
 
 			const result = await service.execute();
 
-			expect(mockClient.request).toHaveBeenCalledWith("/portfolio/trades", {
-				headers: {},
-			});
+			expect(mockClient.request).toHaveBeenCalledWith("/portfolio/trades");
 			expect(result).toEqual(mockTradesResponse);
 			expect(result.trades).toHaveLength(2);
-		});
-
-		it("should successfully get portfolio trades with API key", async () => {
-			mockClient.request.mockResolvedValueOnce(mockTradesResponse);
-
-			const result = await service.execute("test-api-key");
-
-			expect(mockClient.request).toHaveBeenCalledWith("/portfolio/trades", {
-				headers: {
-					Authorization: "Bearer test-api-key",
-				},
-			});
-			expect(result).toEqual(mockTradesResponse);
 		});
 
 		it("should throw error when response is empty", async () => {

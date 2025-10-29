@@ -12,10 +12,6 @@ const getPortfolioHistoryParams = z.object({
 		.string()
 		.optional()
 		.describe("End date for filtering (ISO 8601 format)"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication (required)"),
 });
 
 type GetPortfolioHistoryParams = z.infer<typeof getPortfolioHistoryParams>;
@@ -28,8 +24,7 @@ export const getPortfolioHistoryTool = {
 	execute: async (params: GetPortfolioHistoryParams) => {
 		try {
 			const service = new GetPortfolioHistoryService();
-			const { apiKey, ...serviceParams } = params;
-			const response = await service.execute(serviceParams, apiKey);
+			const response = await service.execute(params);
 
 			return service.format(response);
 		} catch (error) {

@@ -52,23 +52,9 @@ describe("getPortfolioPositionsTool", () => {
 	});
 
 	describe("parameter validation", () => {
-		it("should validate optional apiKey parameter", () => {
-			const result = getPortfolioPositionsTool.parameters.safeParse({
-				apiKey: "test-api-key",
-			});
-			expect(result.success).toBe(true);
-		});
-
 		it("should accept empty parameters", () => {
 			const result = getPortfolioPositionsTool.parameters.safeParse({});
 			expect(result.success).toBe(true);
-		});
-
-		it("should reject invalid parameter types", () => {
-			const result = getPortfolioPositionsTool.parameters.safeParse({
-				apiKey: 123,
-			});
-			expect(result.success).toBe(false);
 		});
 	});
 
@@ -79,20 +65,9 @@ describe("getPortfolioPositionsTool", () => {
 
 			const result = await getPortfolioPositionsTool.execute({});
 
-			expect(mockExecute).toHaveBeenCalledWith(undefined);
+			expect(mockExecute).toHaveBeenCalledWith();
 			expect(mockFormat).toHaveBeenCalledWith(mockPortfolioResponse);
 			expect(result).toBe("Formatted portfolio");
-		});
-
-		it("should pass API key to service", async () => {
-			mockExecute.mockResolvedValueOnce(mockPortfolioResponse);
-			mockFormat.mockReturnValueOnce("Formatted portfolio");
-
-			await getPortfolioPositionsTool.execute({
-				apiKey: "test-api-key",
-			});
-
-			expect(mockExecute).toHaveBeenCalledWith("test-api-key");
 		});
 
 		it("should handle empty portfolio", async () => {
@@ -159,21 +134,19 @@ describe("getPortfolioPositionsTool", () => {
 				return `Found ${response.positions.length} positions`;
 			});
 
-			const result = await getPortfolioPositionsTool.execute({
-				apiKey: "test-api-key",
-			});
+			const result = await getPortfolioPositionsTool.execute({});
 
 			expect(result).toContain("Found 1 positions");
 		});
 
-		it("should work without API key", async () => {
+		it("should work with minimal params", async () => {
 			mockExecute.mockResolvedValueOnce(mockPortfolioResponse);
 			mockFormat.mockReturnValueOnce("Portfolio data");
 
 			const result = await getPortfolioPositionsTool.execute({});
 
 			expect(result).toBe("Portfolio data");
-			expect(mockExecute).toHaveBeenCalledWith(undefined);
+			expect(mockExecute).toHaveBeenCalledWith();
 		});
 	});
 });

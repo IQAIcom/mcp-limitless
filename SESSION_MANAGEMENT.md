@@ -53,16 +53,16 @@ The Limitless MCP server now implements **automatic session management** using H
 ### Before (Old Way - Manual Token Passing)
 
 ```typescript
-// User had to pass apiKey with EVERY authenticated call
-getPortfolioPositions({ apiKey: "xyz..." })
-createOrder({ apiKey: "xyz...", ... })
-cancelOrder({ apiKey: "xyz...", orderId: "..." })
+// User had to pass token with EVERY authenticated call
+getPortfolioPositions({ token: "xyz..." })
+createOrder({ token: "xyz...", ... })
+cancelOrder({ token: "xyz...", orderId: "..." })
 ```
 
 Problems:
 - ❌ Repetitive token passing
 - ❌ User manages session manually
-- ❌ Easy to forget apiKey
+- ❌ Easy to forget token
 - ❌ No automatic session persistence
 
 ### After (New Way - Automatic Session)
@@ -136,17 +136,6 @@ Your session is active and will persist across all tool calls.
 4. Clears cookies on /auth/logout
 ```
 
-### Backward Compatibility
-
-All authenticated tools still accept an optional `apiKey` parameter for backward compatibility or advanced use cases:
-
-```typescript
-// Still works if you want to explicitly pass a token
-GET_PORTFOLIO_POSITIONS({ apiKey: "xyz..." })
-
-// But not needed anymore - session is automatic!
-GET_PORTFOLIO_POSITIONS()
-```
 
 ## Testing
 
@@ -186,7 +175,7 @@ Claude: [Calls LOGIN]
 → ✅ Session created automatically!
 
 Claude: [Calls GET_PORTFOLIO_POSITIONS]
-→ ✅ Returns portfolio (no apiKey needed!)
+→ ✅ Returns portfolio (session cookies handled automatically!)
 
 Claude: "You have 5 positions..."
 
@@ -206,11 +195,9 @@ Claude: [Calls CREATE_ORDER]
 4. **Standard Pattern**: Same as web applications use
 5. **Automatic Cleanup**: Logout clears session properly
 
-## Migration Notes
+## Usage Notes
 
-**For existing code**: No changes required! All existing tools continue to work. The `apiKey` parameter is still accepted but optional.
-
-**For new code**: Simply call LOGIN once, then use any authenticated tool without passing `apiKey`.
+**Simple workflow**: Call LOGIN once, then use any authenticated tool. Session cookies are handled automatically.
 
 ## Future Enhancements
 

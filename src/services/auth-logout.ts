@@ -5,18 +5,11 @@ interface LogoutResponse {
 }
 
 export class AuthLogoutService {
-	async execute(apiKey?: string): Promise<LogoutResponse> {
+	async execute(): Promise<LogoutResponse> {
 		try {
-			// If apiKey provided, use it for backward compatibility
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			// Call logout endpoint
 			const response = await client.request<LogoutResponse>("/auth/logout", {
 				method: "POST",
-				headers,
 				body: {}, // Empty body required by API
 			});
 

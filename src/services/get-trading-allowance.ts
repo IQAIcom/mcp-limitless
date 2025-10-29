@@ -10,19 +10,10 @@ interface TradingAllowanceResponse {
 }
 
 export class GetTradingAllowanceService {
-	async execute(
-		type: "clob" | "negrisk",
-		apiKey?: string,
-	): Promise<TradingAllowanceResponse> {
+	async execute(type: "clob" | "negrisk"): Promise<TradingAllowanceResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<TradingAllowanceResponse>(
 				`/portfolio/trading/allowance?type=${type}`,
-				{ headers },
 			);
 
 			if (!response) {

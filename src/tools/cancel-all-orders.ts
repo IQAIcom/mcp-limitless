@@ -3,12 +3,6 @@ import { CancelAllOrdersService } from "../services/cancel-all-orders.js";
 
 const cancelAllOrdersParams = z.object({
 	slug: z.string().describe("Market slug to cancel all user orders in"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe(
-			"API key or bearer token for authentication (required for trading)",
-		),
 });
 
 type CancelAllOrdersParams = z.infer<typeof cancelAllOrdersParams>;
@@ -21,7 +15,7 @@ export const cancelAllOrdersTool = {
 	execute: async (params: CancelAllOrdersParams) => {
 		try {
 			const service = new CancelAllOrdersService();
-			const response = await service.execute(params.slug, params.apiKey);
+			const response = await service.execute(params.slug);
 
 			return service.format(response, params.slug);
 		} catch (error) {

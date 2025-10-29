@@ -507,10 +507,10 @@ Step 3: Login (Creates Session)
 
 Step 4: Use Authenticated Tools
 ┌──────────────────────────────────────┐
-│ GET_PORTFOLIO_POSITIONS              │  ✓ No apiKey needed!
-│ CREATE_ORDER                         │  ✓ Session persists
-│ CANCEL_ORDER                         │  ✓ Works automatically
-│ GET_PORTFOLIO_TRADES                 │  ✓ Stays authenticated
+│ GET_PORTFOLIO_POSITIONS              │  ✓ Session persists
+│ CREATE_ORDER                         │  ✓ Works automatically
+│ CANCEL_ORDER                         │  ✓ Stays authenticated
+│ GET_PORTFOLIO_TRADES                 │  ✓ Uses session cookies
 └──────────────────────────────────────┘
 
 Step 5: Logout (Optional)
@@ -548,7 +548,7 @@ LOGIN {
 }
 # → ✅ Logged in! Session created automatically
 
-# 5. Now all authenticated tools work without passing apiKey!
+# 5. Now all authenticated tools work automatically!
 GET_PORTFOLIO_POSITIONS       # ✓ Works
 CREATE_ORDER { ... }          # ✓ Works
 GET_PORTFOLIO_TRADES         # ✓ Works
@@ -569,18 +569,6 @@ LOGOUT
 - ✅ Browser-like experience
 - ✅ Automatic cookie handling
 - ✅ Secure: Uses wallet signatures
-
-#### Method 2: API Key (Backward Compatible)
-
-For advanced use cases, you can still pass an explicit API key with each request:
-
-```bash
-GET_PORTFOLIO_POSITIONS {
-  "apiKey": "your-bearer-token-here"
-}
-```
-
-**Note**: This method is supported for backward compatibility but not recommended. The session-based approach is more convenient.
 
 ### Session Details
 

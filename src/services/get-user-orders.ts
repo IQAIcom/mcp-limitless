@@ -15,16 +15,10 @@ interface UserOrdersResponse {
 }
 
 export class GetUserOrdersService {
-	async execute(slug: string, apiKey?: string): Promise<UserOrdersResponse> {
+	async execute(slug: string): Promise<UserOrdersResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<UserOrdersResponse>(
 				`/markets/${slug}/user-orders`,
-				{ headers },
 			);
 
 			if (!response) {

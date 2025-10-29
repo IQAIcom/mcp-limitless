@@ -25,28 +25,13 @@ describe("CancelOrderService", () => {
 	};
 
 	describe("execute", () => {
-		it("should successfully cancel order without API key", async () => {
+		it("should successfully cancel order", async () => {
 			mockClient.request.mockResolvedValueOnce(mockSuccessResponse);
 
 			const result = await service.execute("order-123");
 
 			expect(mockClient.request).toHaveBeenCalledWith("/orders/order-123", {
 				method: "DELETE",
-				headers: {},
-			});
-			expect(result).toEqual(mockSuccessResponse);
-		});
-
-		it("should successfully cancel order with API key", async () => {
-			mockClient.request.mockResolvedValueOnce(mockSuccessResponse);
-
-			const result = await service.execute("order-456", "test-api-key");
-
-			expect(mockClient.request).toHaveBeenCalledWith("/orders/order-456", {
-				method: "DELETE",
-				headers: {
-					Authorization: "Bearer test-api-key",
-				},
 			});
 			expect(result).toEqual(mockSuccessResponse);
 		});
@@ -102,7 +87,6 @@ describe("CancelOrderService", () => {
 
 			expect(mockClient.request).toHaveBeenCalledWith("/orders/0x123abc", {
 				method: "DELETE",
-				headers: {},
 			});
 		});
 	});

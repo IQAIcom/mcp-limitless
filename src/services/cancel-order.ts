@@ -5,21 +5,12 @@ interface CancelOrderResponse {
 }
 
 export class CancelOrderService {
-	async execute(
-		orderId: string,
-		apiKey?: string,
-	): Promise<CancelOrderResponse> {
+	async execute(orderId: string): Promise<CancelOrderResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<CancelOrderResponse>(
 				`/orders/${orderId}`,
 				{
 					method: "DELETE",
-					headers,
 				},
 			);
 

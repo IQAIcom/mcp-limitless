@@ -48,23 +48,9 @@ describe("getPortfolioTradesTool", () => {
 	});
 
 	describe("parameter validation", () => {
-		it("should validate optional apiKey parameter", () => {
-			const result = getPortfolioTradesTool.parameters.safeParse({
-				apiKey: "test-api-key",
-			});
-			expect(result.success).toBe(true);
-		});
-
 		it("should accept empty parameters", () => {
 			const result = getPortfolioTradesTool.parameters.safeParse({});
 			expect(result.success).toBe(true);
-		});
-
-		it("should reject invalid parameter types", () => {
-			const result = getPortfolioTradesTool.parameters.safeParse({
-				apiKey: 123,
-			});
-			expect(result.success).toBe(false);
 		});
 	});
 
@@ -75,20 +61,9 @@ describe("getPortfolioTradesTool", () => {
 
 			const result = await getPortfolioTradesTool.execute({});
 
-			expect(mockExecute).toHaveBeenCalledWith(undefined);
+			expect(mockExecute).toHaveBeenCalledWith();
 			expect(mockFormat).toHaveBeenCalledWith(mockTradesResponse);
 			expect(result).toBe("Formatted trades");
-		});
-
-		it("should pass API key to service", async () => {
-			mockExecute.mockResolvedValueOnce(mockTradesResponse);
-			mockFormat.mockReturnValueOnce("Formatted trades");
-
-			await getPortfolioTradesTool.execute({
-				apiKey: "test-api-key",
-			});
-
-			expect(mockExecute).toHaveBeenCalledWith("test-api-key");
 		});
 
 		it("should handle empty trades", async () => {
@@ -152,21 +127,19 @@ describe("getPortfolioTradesTool", () => {
 				return `Found ${response.trades.length} trades`;
 			});
 
-			const result = await getPortfolioTradesTool.execute({
-				apiKey: "test-api-key",
-			});
+			const result = await getPortfolioTradesTool.execute({});
 
 			expect(result).toContain("Found 1 trades");
 		});
 
-		it("should work without API key", async () => {
+		it("should work with minimal params", async () => {
 			mockExecute.mockResolvedValueOnce(mockTradesResponse);
 			mockFormat.mockReturnValueOnce("Trade data");
 
 			const result = await getPortfolioTradesTool.execute({});
 
 			expect(result).toBe("Trade data");
-			expect(mockExecute).toHaveBeenCalledWith(undefined);
+			expect(mockExecute).toHaveBeenCalledWith();
 		});
 	});
 });

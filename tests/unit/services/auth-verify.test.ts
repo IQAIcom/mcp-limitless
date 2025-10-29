@@ -21,29 +21,13 @@ describe("AuthVerifyService", () => {
 	});
 
 	describe("execute", () => {
-		it("should successfully verify authentication without API key", async () => {
+		it("should successfully verify authentication", async () => {
 			const mockAddress = "0x1234567890123456789012345678901234567890";
 			mockClient.request.mockResolvedValueOnce(mockAddress);
 
 			const result = await service.execute();
 
-			expect(mockClient.request).toHaveBeenCalledWith("/auth/verify-auth", {
-				headers: {},
-			});
-			expect(result).toBe(mockAddress);
-		});
-
-		it("should successfully verify authentication with API key", async () => {
-			const mockAddress = "0x1234567890123456789012345678901234567890";
-			const apiKey = "test-api-key";
-			mockClient.request.mockResolvedValueOnce(mockAddress);
-
-			const result = await service.execute(apiKey);
-
-			// Service sends token as session cookie instead of Bearer token
-			expect(mockClient.request).toHaveBeenCalledWith("/auth/verify-auth", {
-				headers: { Cookie: "limitless_session=test-api-key" },
-			});
+			expect(mockClient.request).toHaveBeenCalledWith("/auth/verify-auth");
 			expect(result).toBe(mockAddress);
 		});
 

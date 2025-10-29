@@ -17,17 +17,10 @@ interface TradesResponse {
 }
 
 export class GetPortfolioTradesService {
-	async execute(apiKey?: string): Promise<TradesResponse> {
+	async execute(): Promise<TradesResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
-			const response = await client.request<TradesResponse>(
-				"/portfolio/trades",
-				{ headers },
-			);
+			const response =
+				await client.request<TradesResponse>("/portfolio/trades");
 
 			if (!response) {
 				throw new Error("Unable to retrieve trades");

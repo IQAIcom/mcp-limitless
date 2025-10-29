@@ -1,12 +1,7 @@
 import { z } from "zod";
 import { AuthLogoutService } from "../services/auth-logout.js";
 
-const authLogoutParams = z.object({
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication"),
-});
+const authLogoutParams = z.object({});
 
 type AuthLogoutParams = z.infer<typeof authLogoutParams>;
 
@@ -18,7 +13,7 @@ export const authLogoutTool = {
 	execute: async (params: AuthLogoutParams) => {
 		try {
 			const service = new AuthLogoutService();
-			const response = await service.execute(params.apiKey);
+			const response = await service.execute();
 
 			return service.format(response);
 		} catch (error) {

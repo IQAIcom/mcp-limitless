@@ -60,29 +60,13 @@ describe("CreateOrderService", () => {
 	};
 
 	describe("execute", () => {
-		it("should successfully create order without API key", async () => {
+		it("should successfully create order", async () => {
 			mockClient.request.mockResolvedValueOnce(mockSuccessResponse);
 
 			const result = await service.execute(validOrderParams);
 
 			expect(mockClient.request).toHaveBeenCalledWith("/orders", {
 				method: "POST",
-				headers: {},
-				body: validOrderParams,
-			});
-			expect(result).toEqual(mockSuccessResponse);
-		});
-
-		it("should successfully create order with API key", async () => {
-			mockClient.request.mockResolvedValueOnce(mockSuccessResponse);
-
-			const result = await service.execute(validOrderParams, "test-api-key");
-
-			expect(mockClient.request).toHaveBeenCalledWith("/orders", {
-				method: "POST",
-				headers: {
-					Authorization: "Bearer test-api-key",
-				},
 				body: validOrderParams,
 			});
 			expect(result).toEqual(mockSuccessResponse);

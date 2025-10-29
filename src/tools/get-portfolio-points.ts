@@ -1,12 +1,7 @@
 import { z } from "zod";
 import { GetPortfolioPointsService } from "../services/get-portfolio-points.js";
 
-const getPortfolioPointsParams = z.object({
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication (required)"),
-});
+const getPortfolioPointsParams = z.object({});
 
 type GetPortfolioPointsParams = z.infer<typeof getPortfolioPointsParams>;
 
@@ -18,7 +13,7 @@ export const getPortfolioPointsTool = {
 	execute: async (params: GetPortfolioPointsParams) => {
 		try {
 			const service = new GetPortfolioPointsService();
-			const response = await service.execute(params.apiKey);
+			const response = await service.execute();
 
 			return service.format(response);
 		} catch (error) {

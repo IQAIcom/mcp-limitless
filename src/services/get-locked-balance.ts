@@ -9,16 +9,10 @@ interface LockedBalanceResponse {
 }
 
 export class GetLockedBalanceService {
-	async execute(slug: string, apiKey?: string): Promise<LockedBalanceResponse> {
+	async execute(slug: string): Promise<LockedBalanceResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<LockedBalanceResponse>(
 				`/markets/${slug}/locked-balance`,
-				{ headers },
 			);
 
 			if (!response) {

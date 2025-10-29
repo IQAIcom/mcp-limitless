@@ -5,12 +5,6 @@ const cancelOrderBatchParams = z.object({
 	orderIds: z
 		.array(z.string())
 		.describe("Array of order IDs to be cancelled in a single batch operation"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe(
-			"API key or bearer token for authentication (required for trading)",
-		),
 });
 
 type CancelOrderBatchParams = z.infer<typeof cancelOrderBatchParams>;
@@ -23,7 +17,7 @@ export const cancelOrderBatchTool = {
 	execute: async (params: CancelOrderBatchParams) => {
 		try {
 			const service = new CancelOrderBatchService();
-			const response = await service.execute(params.orderIds, params.apiKey);
+			const response = await service.execute(params.orderIds);
 
 			return service.format(response);
 		} catch (error) {

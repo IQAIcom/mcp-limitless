@@ -5,21 +5,12 @@ interface CancelOrderBatchResponse {
 }
 
 export class CancelOrderBatchService {
-	async execute(
-		orderIds: string[],
-		apiKey?: string,
-	): Promise<CancelOrderBatchResponse> {
+	async execute(orderIds: string[]): Promise<CancelOrderBatchResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<CancelOrderBatchResponse>(
 				"/orders/cancel-batch",
 				{
 					method: "POST",
-					headers,
 					body: { orderIds },
 				},
 			);

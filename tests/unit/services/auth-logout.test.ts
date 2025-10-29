@@ -22,7 +22,7 @@ describe("AuthLogoutService", () => {
 	});
 
 	describe("execute", () => {
-		it("should successfully logout without API key", async () => {
+		it("should successfully logout", async () => {
 			const mockResponse = { message: "Logged out successfully" };
 			mockClient.request.mockResolvedValueOnce(mockResponse);
 
@@ -30,22 +30,6 @@ describe("AuthLogoutService", () => {
 
 			expect(mockClient.request).toHaveBeenCalledWith("/auth/logout", {
 				method: "POST",
-				headers: {},
-				body: {}, // Empty body required by API
-			});
-			expect(result).toEqual(mockResponse);
-		});
-
-		it("should successfully logout with API key", async () => {
-			const mockResponse = { message: "Logged out successfully" };
-			const apiKey = "test-api-key";
-			mockClient.request.mockResolvedValueOnce(mockResponse);
-
-			const result = await service.execute(apiKey);
-
-			expect(mockClient.request).toHaveBeenCalledWith("/auth/logout", {
-				method: "POST",
-				headers: { Authorization: "Bearer test-api-key" },
 				body: {}, // Empty body required by API
 			});
 			expect(result).toEqual(mockResponse);

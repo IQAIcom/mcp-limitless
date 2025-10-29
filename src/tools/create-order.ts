@@ -38,12 +38,6 @@ const createOrderParams = z.object({
 		.enum(["FOK", "GTC"])
 		.describe("Order type (GTC=Good Till Cancelled, FOK=Fill Or Kill)"),
 	marketSlug: z.string().describe("Market identifier slug"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe(
-			"API key or bearer token for authentication (required for trading)",
-		),
 });
 
 type CreateOrderParams = z.infer<typeof createOrderParams>;
@@ -56,8 +50,7 @@ export const createOrderTool = {
 	execute: async (params: CreateOrderParams) => {
 		try {
 			const service = new CreateOrderService();
-			const { apiKey, ...orderParams } = params;
-			const response = await service.execute(orderParams, apiKey);
+			const response = await service.execute(params);
 
 			return service.format(response);
 		} catch (error) {

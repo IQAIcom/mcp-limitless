@@ -62,9 +62,9 @@ export async function authenticateTestWallet(
 /**
  * Logout an authenticated session
  */
-export async function logoutSession(apiKey?: string): Promise<void> {
+export async function logoutSession(): Promise<void> {
 	const logoutService = new AuthLogoutService();
-	await logoutService.execute(apiKey);
+	await logoutService.execute();
 }
 
 /**
@@ -84,7 +84,7 @@ export async function withAuthenticatedSession<T>(
 	} finally {
 		// Cleanup: logout
 		try {
-			await logoutSession(session.token);
+			await logoutSession();
 		} catch (error) {
 			// Ignore logout errors in cleanup
 			console.warn("Warning: Failed to logout in test cleanup:", error);

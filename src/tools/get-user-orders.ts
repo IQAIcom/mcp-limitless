@@ -3,10 +3,6 @@ import { GetUserOrdersService } from "../services/get-user-orders.js";
 
 const getUserOrdersParams = z.object({
 	slug: z.string().describe("Market slug identifier"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication (required)"),
 });
 
 type GetUserOrdersParams = z.infer<typeof getUserOrdersParams>;
@@ -19,7 +15,7 @@ export const getUserOrdersTool = {
 	execute: async (params: GetUserOrdersParams) => {
 		try {
 			const service = new GetUserOrdersService();
-			const response = await service.execute(params.slug, params.apiKey);
+			const response = await service.execute(params.slug);
 
 			return service.format(response, params.slug);
 		} catch (error) {

@@ -39,7 +39,6 @@ describe("createOrderTool", () => {
 		ownerId: 1,
 		orderType: "GTC" as const,
 		marketSlug: "bitcoin-100k-2024",
-		apiKey: "test-api-key",
 	};
 
 	const mockResponse = {
@@ -145,12 +144,6 @@ describe("createOrderTool", () => {
 			expect(result.success).toBe(false);
 		});
 
-		it("should accept optional apiKey", () => {
-			const { apiKey, ...params } = validParams;
-			const result = createOrderTool.parameters.safeParse(params);
-			expect(result.success).toBe(true);
-		});
-
 		it("should reject negative makerAmount", () => {
 			const result = createOrderTool.parameters.safeParse({
 				...validParams,
@@ -241,20 +234,8 @@ describe("createOrderTool", () => {
 
 			const result = await createOrderTool.execute(validParams);
 
-			const { apiKey, ...orderParams } = validParams;
-			expect(mockExecute).toHaveBeenCalledWith(orderParams, apiKey);
+			expect(mockExecute).toHaveBeenCalledWith(validParams);
 			expect(mockFormat).toHaveBeenCalledWith(mockResponse);
-			expect(result).toContain("✅ Order Created Successfully");
-		});
-
-		it("should execute without apiKey", async () => {
-			const { apiKey, ...params } = validParams;
-			mockExecute.mockResolvedValueOnce(mockResponse);
-			mockFormat.mockReturnValueOnce("✅ Order Created Successfully");
-
-			const result = await createOrderTool.execute(params);
-
-			expect(mockExecute).toHaveBeenCalledWith(params, undefined);
 			expect(result).toContain("✅ Order Created Successfully");
 		});
 

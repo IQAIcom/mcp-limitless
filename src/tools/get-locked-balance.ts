@@ -3,10 +3,6 @@ import { GetLockedBalanceService } from "../services/get-locked-balance.js";
 
 const getLockedBalanceParams = z.object({
 	slug: z.string().describe("Market slug identifier"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication (required)"),
 });
 
 type GetLockedBalanceParams = z.infer<typeof getLockedBalanceParams>;
@@ -19,7 +15,7 @@ export const getLockedBalanceTool = {
 	execute: async (params: GetLockedBalanceParams) => {
 		try {
 			const service = new GetLockedBalanceService();
-			const response = await service.execute(params.slug, params.apiKey);
+			const response = await service.execute(params.slug);
 
 			return service.format(response, params.slug);
 		} catch (error) {

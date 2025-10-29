@@ -10,17 +10,10 @@ interface PointsResponse {
 }
 
 export class GetPortfolioPointsService {
-	async execute(apiKey?: string): Promise<PointsResponse> {
+	async execute(): Promise<PointsResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
-			const response = await client.request<PointsResponse>(
-				"/portfolio/points",
-				{ headers },
-			);
+			const response =
+				await client.request<PointsResponse>("/portfolio/points");
 
 			if (!response) {
 				throw new Error("Unable to retrieve points breakdown");

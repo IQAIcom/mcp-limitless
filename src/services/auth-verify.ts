@@ -1,18 +1,10 @@
 import { client } from "../lib/client.js";
 
 export class AuthVerifyService {
-	async execute(apiKey?: string): Promise<string> {
+	async execute(): Promise<string> {
 		try {
-			// If apiKey provided, use it for backward compatibility
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Cookie = `limitless_session=${apiKey}`;
-			}
-
 			// Session cookies are automatically sent by the client
-			const response = await client.request<string>("/auth/verify-auth", {
-				headers,
-			});
+			const response = await client.request<string>("/auth/verify-auth");
 
 			if (!response) {
 				throw new Error("Unable to verify authentication");

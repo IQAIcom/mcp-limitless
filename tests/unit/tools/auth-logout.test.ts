@@ -39,23 +39,6 @@ describe("authLogoutTool", () => {
 			const result = authLogoutTool.parameters.safeParse({});
 			expect(result.success).toBe(true);
 		});
-
-		it("should accept apiKey parameter", () => {
-			const result = authLogoutTool.parameters.safeParse({
-				apiKey: "test-key",
-			});
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data.apiKey).toBe("test-key");
-			}
-		});
-
-		it("should reject invalid parameter types", () => {
-			const result = authLogoutTool.parameters.safeParse({
-				apiKey: 123,
-			});
-			expect(result.success).toBe(false);
-		});
 	});
 
 	describe("execute", () => {
@@ -66,19 +49,9 @@ describe("authLogoutTool", () => {
 
 			const result = await authLogoutTool.execute({});
 
-			expect(mockExecute).toHaveBeenCalledWith(undefined);
+			expect(mockExecute).toHaveBeenCalledWith();
 			expect(mockFormat).toHaveBeenCalledWith(mockResponse);
 			expect(result).toContain("✅");
-		});
-
-		it("should pass apiKey to service", async () => {
-			const mockResponse = { message: "Logged out successfully" };
-			mockExecute.mockResolvedValueOnce(mockResponse);
-			mockFormat.mockReturnValueOnce("✅ Logged out successfully");
-
-			await authLogoutTool.execute({ apiKey: "test-key" });
-
-			expect(mockExecute).toHaveBeenCalledWith("test-key");
 		});
 
 		it("should handle service errors gracefully", async () => {

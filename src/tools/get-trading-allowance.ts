@@ -3,10 +3,6 @@ import { GetTradingAllowanceService } from "../services/get-trading-allowance.js
 
 const getTradingAllowanceParams = z.object({
 	type: z.enum(["clob", "negrisk"]).describe("Trading type: CLOB or NegRisk"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication (required)"),
 });
 
 type GetTradingAllowanceParams = z.infer<typeof getTradingAllowanceParams>;
@@ -19,7 +15,7 @@ export const getTradingAllowanceTool = {
 	execute: async (params: GetTradingAllowanceParams) => {
 		try {
 			const service = new GetTradingAllowanceService();
-			const response = await service.execute(params.type, params.apiKey);
+			const response = await service.execute(params.type);
 
 			return service.format(response);
 		} catch (error) {

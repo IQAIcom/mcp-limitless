@@ -1,12 +1,7 @@
 import { z } from "zod";
 import { GetPortfolioTradesService } from "../services/get-portfolio-trades.js";
 
-const getPortfolioTradesParams = z.object({
-	apiKey: z
-		.string()
-		.optional()
-		.describe("API key or bearer token for authentication (required)"),
-});
+const getPortfolioTradesParams = z.object({});
 
 type GetPortfolioTradesParams = z.infer<typeof getPortfolioTradesParams>;
 
@@ -18,7 +13,7 @@ export const getPortfolioTradesTool = {
 	execute: async (params: GetPortfolioTradesParams) => {
 		try {
 			const service = new GetPortfolioTradesService();
-			const response = await service.execute(params.apiKey);
+			const response = await service.execute();
 
 			return service.format(response);
 		} catch (error) {

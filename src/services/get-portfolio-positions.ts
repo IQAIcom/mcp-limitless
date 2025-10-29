@@ -19,16 +19,10 @@ interface PortfolioPositionsResponse {
 }
 
 export class GetPortfolioPositionsService {
-	async execute(apiKey?: string): Promise<PortfolioPositionsResponse> {
+	async execute(): Promise<PortfolioPositionsResponse> {
 		try {
-			const headers: Record<string, string> = {};
-			if (apiKey) {
-				headers.Authorization = `Bearer ${apiKey}`;
-			}
-
 			const response = await client.request<PortfolioPositionsResponse>(
 				"/portfolio/positions",
-				{ headers },
 			);
 
 			if (!response) {

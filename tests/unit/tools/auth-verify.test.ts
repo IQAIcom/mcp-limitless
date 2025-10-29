@@ -39,23 +39,6 @@ describe("authVerifyTool", () => {
 			const result = authVerifyTool.parameters.safeParse({});
 			expect(result.success).toBe(true);
 		});
-
-		it("should accept apiKey parameter", () => {
-			const result = authVerifyTool.parameters.safeParse({
-				apiKey: "test-key",
-			});
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data.apiKey).toBe("test-key");
-			}
-		});
-
-		it("should reject invalid parameter types", () => {
-			const result = authVerifyTool.parameters.safeParse({
-				apiKey: 123,
-			});
-			expect(result.success).toBe(false);
-		});
 	});
 
 	describe("execute", () => {
@@ -66,19 +49,9 @@ describe("authVerifyTool", () => {
 
 			const result = await authVerifyTool.execute({});
 
-			expect(mockExecute).toHaveBeenCalledWith(undefined);
+			expect(mockExecute).toHaveBeenCalledWith();
 			expect(mockFormat).toHaveBeenCalledWith(mockAddress);
 			expect(result).toContain("✅ Authenticated as:");
-		});
-
-		it("should pass apiKey to service", async () => {
-			const mockAddress = "0x1234567890123456789012345678901234567890";
-			mockExecute.mockResolvedValueOnce(mockAddress);
-			mockFormat.mockReturnValueOnce(`✅ Authenticated as: ${mockAddress}`);
-
-			await authVerifyTool.execute({ apiKey: "test-key" });
-
-			expect(mockExecute).toHaveBeenCalledWith("test-key");
 		});
 
 		it("should handle service errors gracefully", async () => {

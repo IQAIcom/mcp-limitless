@@ -5,12 +5,6 @@ const cancelOrderParams = z.object({
 	orderId: z
 		.string()
 		.describe("Unique identifier of the order to be cancelled"),
-	apiKey: z
-		.string()
-		.optional()
-		.describe(
-			"API key or bearer token for authentication (required for trading)",
-		),
 });
 
 type CancelOrderParams = z.infer<typeof cancelOrderParams>;
@@ -23,7 +17,7 @@ export const cancelOrderTool = {
 	execute: async (params: CancelOrderParams) => {
 		try {
 			const service = new CancelOrderService();
-			const response = await service.execute(params.orderId, params.apiKey);
+			const response = await service.execute(params.orderId);
 
 			return service.format(response);
 		} catch (error) {
