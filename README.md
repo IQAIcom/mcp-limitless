@@ -71,9 +71,49 @@ This project implements a comprehensive Model Context Protocol (MCP) server to i
    pnpm run build
    ```
 
+## How It Works
+
+This MCP server acts as a bridge between AI assistants (like Claude) and the Limitless prediction market API:
+
+```
+┌─────────────────┐
+│   MCP Client    │  ← AI Assistant (Claude, IDE extensions, etc.)
+│   (Claude AI)   │
+└────────┬────────┘
+         │ Tool Calls (standardized MCP protocol)
+         ▼
+┌─────────────────┐
+│  MCP Server     │  ← This project
+│  ┌────────────┐ │
+│  │ 27 Tools   │ │  ← Search markets, create orders, etc.
+│  │ Session    │ │  ← Automatic cookie-based authentication
+│  │ Manager    │ │  ← Persists login across requests
+│  └────────────┘ │
+└────────┬────────┘
+         │ HTTP/REST API calls (with automatic cookies)
+         ▼
+┌─────────────────┐
+│ Limitless API   │  ← Limitless Exchange backend
+│ api.limitless   │
+│    .exchange    │
+└─────────────────┘
+```
+
+**Key Features:**
+- **Automatic Session Management**: Login once, stay authenticated for the entire session (like a browser)
+- **Stateless Tools**: No need to pass API keys with every request
+- **Type-Safe**: Full TypeScript with Zod schema validation
+- **Browser-Like UX**: Cookies handled automatically using `tough-cookie`
+
 ## Running the Server with an MCP Client
 
-MCP clients (like AI assistants, IDE extensions, etc.) will run this server as a background process. Configure your MCP client to start the server:
+MCP clients (like Claude Desktop, AI assistants, IDE extensions) will run this server as a background process. Configure your MCP client to start the server:
+
+### Claude Desktop Configuration
+
+Add to your Claude Desktop config file:
+- **MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -98,6 +138,69 @@ Or if installed via npm:
   }
 }
 ```
+
+After configuring, restart Claude Desktop. The server will start automatically when Claude needs it.
+
+## Quick Start: Using with Claude Desktop
+
+Once configured, you can interact with Limitless through natural conversation with Claude:
+
+```
+You: "Show me the top 5 crypto prediction markets on Limitless"
+
+Claude: [Uses SEARCH_MARKETS tool]
+→ Here are the top 5 crypto markets:
+  1. Will Bitcoin reach $100k in 2025? (75% YES)
+  2. Will Ethereum surpass $5000? (62% YES)
+  ...
+
+You: "Check if I'm logged into Limitless"
+
+Claude: [Uses VERIFY_AUTH tool]
+→ You're not currently authenticated. Would you like to log in?
+
+You: "Yes, log me in. My address is 0x742d35Cc..."
+
+Claude: [Uses GET_SIGNING_MESSAGE tool]
+→ I'll help you log in. Please sign this message with your wallet:
+  "Welcome to Limitless.exchange!
+   Please sign this message to verify your identity.
+   Nonce: 0xa1b2c3d4..."
+
+You: "Here's my signature: 0xabc123..."
+
+Claude: [Uses LOGIN tool]
+→ ✅ Successfully logged in as 0x742d35Cc...
+   Your session is now active!
+
+You: "Show me my portfolio positions"
+
+Claude: [Uses GET_PORTFOLIO_POSITIONS tool]
+→ 💼 Your Portfolio:
+   1. Bitcoin $100k (YES) - 100 shares @ $0.65
+      Current: $0.75 | P&L: +$10.00 (+15.38%)
+
+   Total Value: $75.00 | Total P&L: +$10.00
+
+You: "Place a buy order for 50 shares of 'Will ETH reach $5k' at 60 cents"
+
+Claude: [Uses CREATE_ORDER tool]
+→ ✅ Order created successfully!
+   Market: Will Ethereum surpass $5000
+   Side: BUY | Amount: 50 shares @ $0.60
+   Order ID: 6f52b6d2-6c9e-4a5c-8a4f-28ab4b7ff203
+
+You: "Cancel that order"
+
+Claude: [Uses CANCEL_ORDER tool]
+→ ✅ Order canceled successfully
+```
+
+**Key Points:**
+- 🤖 Natural language interface - just talk to Claude
+- 🔄 Automatic session persistence - login once, use everywhere
+- 🛠️ 27 tools available for markets, portfolio, and trading
+- 🔒 Secure wallet-based authentication
 
 ## Tool Examples
 
@@ -303,12 +406,24 @@ See [.github/CI.md](.github/CI.md) for detailed CI/CD documentation.
 
 This MCP server is built with a clean, modular architecture:
 
+- **Session Manager** (`src/lib/session-manager.ts`) - Automatic cookie-based session management using `tough-cookie`
+  - Handles authentication cookies automatically (like a browser)
+  - Persists login state across all requests
+  - No manual token passing required
 - **HTTP Client** (`src/lib/client.ts`) - Handles all HTTP communication with the Limitless API
+  - Uses SessionManager for automatic authentication
+  - Provides session status methods (`isAuthenticated()`, `getAuthenticatedAddress()`)
+  - Supports backward compatibility with explicit API keys
 - **Services** (`src/services/`) - Each service encapsulates API interactions and response formatting
   - `execute()` method for API calls
   - `format()` method for user-friendly output
 - **Tools** (`src/tools/`) - MCP tool definitions using Zod schemas for parameter validation
+  - 27 tools covering markets, portfolio, trading, and authentication
+  - Type-safe parameter validation
+  - Standardized error handling
 - **Index** (`src/index.ts`) - Server initialization and tool registration
+
+See [Authentication](#authentication) section for details on how session management works.
 
 ## API Coverage
 
@@ -353,26 +468,150 @@ Full API specification is available in `limitless-api.yaml`.
 
 ## Authentication
 
-Many tools require authentication to access user-specific data or perform trading operations. There are two ways to authenticate:
+Many tools require authentication to access user-specific data or perform trading operations. This server implements **automatic session management** using HTTP cookies, just like a web browser.
 
-### 1. Using the Authentication Flow (Recommended for Wallet Users)
+### How Authentication Works
+
+The server uses a cookie-based session that persists automatically across all requests:
+
 ```
-1. Call GET_SIGNING_MESSAGE to get a message to sign
-2. Sign the message with your wallet (e.g., MetaMask)
-3. Call LOGIN with your account, signing message, and signature
-4. Use the session for authenticated calls
+Step 1: Get Signing Message
+┌──────────────────────────────────────┐
+│ VERIFY_AUTH                          │  ← Check if already logged in
+│ → Not authenticated                  │
+└──────────────────────────────────────┘
+         ↓
+┌──────────────────────────────────────┐
+│ GET_SIGNING_MESSAGE                  │
+│ → Returns message with nonce         │
+└──────────────────────────────────────┘
+
+Step 2: Sign with Wallet
+┌──────────────────────────────────────┐
+│ User signs message with MetaMask     │
+│ or other Web3 wallet                 │
+└──────────────────────────────────────┘
+
+Step 3: Login (Creates Session)
+┌──────────────────────────────────────┐
+│ LOGIN                                │
+│ - account: "0x..."                   │
+│ - signingMessage: "..."              │
+│ - signature: "0x..."                 │
+│ → ✅ Session created automatically!  │
+│ → Cookies stored in memory          │
+└──────────────────────────────────────┘
+
+Step 4: Use Authenticated Tools
+┌──────────────────────────────────────┐
+│ GET_PORTFOLIO_POSITIONS              │  ✓ No apiKey needed!
+│ CREATE_ORDER                         │  ✓ Session persists
+│ CANCEL_ORDER                         │  ✓ Works automatically
+│ GET_PORTFOLIO_TRADES                 │  ✓ Stays authenticated
+└──────────────────────────────────────┘
+
+Step 5: Logout (Optional)
+┌──────────────────────────────────────┐
+│ LOGOUT                               │
+│ → Session cleared                    │
+│ → Cookies removed                    │
+└──────────────────────────────────────┘
 ```
 
-### 2. Using an API Key
+### Authentication Methods
+
+#### Method 1: Wallet Signature (Recommended)
+
+**Login once, use everywhere:**
+
+```bash
+# 1. Check authentication status
+VERIFY_AUTH
+# → "Not authenticated"
+
+# 2. Get signing message
+GET_SIGNING_MESSAGE
+# → Returns: "Welcome to Limitless.exchange!..."
+# → With nonce: "0xa1b2c3d4..."
+
+# 3. Sign message with your wallet (MetaMask, etc.)
+# User action: Sign in wallet
+
+# 4. Login with signature
+LOGIN {
+  "account": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  "signingMessage": "Welcome to Limitless.exchange!...",
+  "signature": "0xabc123..."
+}
+# → ✅ Logged in! Session created automatically
+
+# 5. Now all authenticated tools work without passing apiKey!
+GET_PORTFOLIO_POSITIONS       # ✓ Works
+CREATE_ORDER { ... }          # ✓ Works
+GET_PORTFOLIO_TRADES         # ✓ Works
+CANCEL_ORDER { orderId: "..." } # ✓ Works
+
+# 6. Check status anytime
+VERIFY_AUTH
+# → "✅ Authenticated as 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+
+# 7. Logout when done
+LOGOUT
+# → Session cleared
 ```
-Pass the `apiKey` parameter to any tool that requires authentication:
-{
-  "apiKey": "your-bearer-token-here",
-  ...other parameters
+
+**Benefits:**
+- ✅ Login once, stay authenticated for entire session
+- ✅ No manual token management
+- ✅ Browser-like experience
+- ✅ Automatic cookie handling
+- ✅ Secure: Uses wallet signatures
+
+#### Method 2: API Key (Backward Compatible)
+
+For advanced use cases, you can still pass an explicit API key with each request:
+
+```bash
+GET_PORTFOLIO_POSITIONS {
+  "apiKey": "your-bearer-token-here"
 }
 ```
 
-Tools that require authentication are marked with "(requires authentication)" in the features list above.
+**Note**: This method is supported for backward compatibility but not recommended. The session-based approach is more convenient.
+
+### Session Details
+
+- **Lifetime**: Session persists for the entire MCP server process lifetime
+- **Storage**: In-memory cookie jar (not saved to disk)
+- **Scope**: One session per server instance
+- **Security**: HTTP-only cookies set by Limitless API
+- **Automatic**: Cookies sent and received automatically on all requests
+
+**Technical Details**: For an in-depth explanation of the session management architecture, including cookie handling, the SessionManager implementation, and migration notes, see [SESSION_MANAGEMENT.md](SESSION_MANAGEMENT.md).
+
+### Tools Requiring Authentication
+
+The following tools require authentication (marked with 🔐):
+- 🔐 GET_LOCKED_BALANCE
+- 🔐 GET_USER_ORDERS
+- 🔐 GET_PORTFOLIO_POSITIONS
+- 🔐 GET_PORTFOLIO_TRADES
+- 🔐 GET_PORTFOLIO_HISTORY
+- 🔐 GET_PORTFOLIO_POINTS
+- 🔐 GET_TRADING_ALLOWANCE
+- 🔐 CREATE_ORDER
+- 🔐 CANCEL_ORDER
+- 🔐 CANCEL_ORDER_BATCH
+- 🔐 CANCEL_ALL_ORDERS
+- 🔐 LOGIN
+- 🔐 LOGOUT
+
+Public tools (no authentication required):
+- ✅ All market discovery tools (SEARCH_MARKETS, GET_MARKET, etc.)
+- ✅ GET_USER_TRADED_VOLUME (public data)
+- ✅ GET_PUBLIC_USER_POSITIONS (public data)
+- ✅ GET_SIGNING_MESSAGE
+- ✅ VERIFY_AUTH
 
 ## Contributing
 
