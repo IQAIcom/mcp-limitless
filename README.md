@@ -279,10 +279,10 @@ Response:
 
 #### GET_PORTFOLIO_POSITIONS
 ```json
-{
-  "apiKey": "your-api-key-here"
-}
+{}
 ```
+
+> **Note**: No parameters needed! Authentication is handled automatically via session cookies after logging in with the LOGIN tool.
 
 Response:
 ```
@@ -302,10 +302,10 @@ Response:
 
 #### GET_PORTFOLIO_TRADES
 ```json
-{
-  "apiKey": "your-api-key-here"
-}
+{}
 ```
+
+> **Note**: No parameters needed! Authentication is handled automatically via session cookies after logging in with the LOGIN tool.
 
 #### GET_USER_TRADED_VOLUME (Public)
 ```json
@@ -337,18 +337,20 @@ Response:
   },
   "ownerId": 12345,
   "orderType": "GTC",
-  "marketSlug": "will-bitcoin-reach-100k-2025",
-  "apiKey": "your-api-key-here"
+  "marketSlug": "will-bitcoin-reach-100k-2025"
 }
 ```
+
+> **Note**: No `apiKey` needed! Authentication is handled automatically via session cookies after logging in with the LOGIN tool.
 
 #### CANCEL_ORDER
 ```json
 {
-  "orderId": "6f52b6d2-6c9e-4a5c-8a4f-28ab4b7ff203",
-  "apiKey": "your-api-key-here"
+  "orderId": "6f52b6d2-6c9e-4a5c-8a4f-28ab4b7ff203"
 }
 ```
+
+> **Note**: No `apiKey` needed! Authentication is handled automatically via session cookies after logging in with the LOGIN tool.
 
 Response:
 ```
@@ -358,10 +360,11 @@ Response:
 #### CANCEL_ALL_ORDERS
 ```json
 {
-  "slug": "will-bitcoin-reach-100k-2025",
-  "apiKey": "your-api-key-here"
+  "slug": "will-bitcoin-reach-100k-2025"
 }
 ```
+
+> **Note**: No `apiKey` needed! Authentication is handled automatically via session cookies after logging in with the LOGIN tool.
 
 ## Development
 
