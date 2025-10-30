@@ -236,6 +236,60 @@ paths:
           description: Server error when retrieving markets data
       tags:
         - Markets
+  /categories:
+    get:
+      operationId: CategoryController_getCategories
+      summary: Get all categories
+      description: Returns all available categories with their IDs, names, priorities,
+        and metadata. Categories are used to organize and filter markets.
+      parameters: []
+      responses:
+        "200":
+          description: List of all categories with metadata
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      description: Unique category identifier
+                      example: 2
+                    name:
+                      type: string
+                      description: Category name
+                      example: Crypto
+                    priority:
+                      type: number
+                      description: Category display priority (higher = more prominent)
+                      example: 24
+                    metadata:
+                      type: object
+                      nullable: true
+                      properties:
+                        logoUrl:
+                          type: string
+                          nullable: true
+                          description: URL to category logo image
+                        chatName:
+                          type: string
+                          nullable: true
+                          description: Associated chat/channel name
+                        coverUrl:
+                          type: string
+                          nullable: true
+                          description: URL to category cover image
+                      description: Additional category metadata
+                  required:
+                    - id
+                    - name
+                    - priority
+        "500":
+          description: Server error when retrieving categories
+      tags:
+        - Markets
   /markets/categories/count:
     get:
       operationId: MarketController_getActiveMarketCountPerCategory
@@ -914,6 +968,126 @@ paths:
           description: Profile not found
       tags:
         - Portfolio
+      security:
+        - bearer: []
+        - limitless_session: []
+  /profiles/{address}:
+    get:
+      operationId: ProfileController_getUserProfile
+      summary: Get User Profile
+      description: Get comprehensive user profile information including username, rank, points, leaderboard position, and more
+      parameters:
+        - name: address
+          required: true
+          in: path
+          description: Ethereum address of the user
+          schema:
+            type: string
+            example: "0x9fEAB70f3c4a944B97b7565BAc4991dF5B7A69ff"
+      responses:
+        "200":
+          description: User profile information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 178532
+                  account:
+                    type: string
+                    example: "0x9fEAB70f3c4a944B97b7565BAc4991dF5B7A69ff"
+                  username:
+                    type: string
+                    nullable: true
+                    example: "kesarito"
+                  displayName:
+                    type: string
+                    example: "kesarito"
+                  bio:
+                    type: string
+                    nullable: true
+                    example: "iqai.com"
+                  client:
+                    type: string
+                    example: "eoa"
+                  pfpUrl:
+                    type: string
+                    nullable: true
+                    example: "https://cdn.limitless.exchange/profiles/178532/52bfbe91-b46e-4e3b-a044-25b9accf55a7.png"
+                  smartWallet:
+                    type: string
+                    nullable: true
+                  isCreator:
+                    type: boolean
+                    example: false
+                  isOnboarded:
+                    type: boolean
+                    example: false
+                  isAdmin:
+                    type: boolean
+                    example: false
+                  socialUrl:
+                    type: string
+                    nullable: true
+                  hasTraded:
+                    type: boolean
+                    example: false
+                  referralCode:
+                    type: string
+                    example: "J7T97X1RGQ"
+                  mode:
+                    type: string
+                    example: "advanced"
+                  tradeWalletOption:
+                    type: string
+                    nullable: true
+                  tradeWalletChoosen:
+                    type: boolean
+                    example: false
+                  embeddedAccount:
+                    type: string
+                    nullable: true
+                  rank:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        example: 1
+                      name:
+                        type: string
+                        example: "Bronze"
+                      feeRateBps:
+                        type: number
+                        example: 300
+                  points:
+                    type: number
+                    example: 1
+                  accumulativePoints:
+                    type: number
+                    example: 1
+                  isTop100:
+                    type: boolean
+                    example: false
+                  referralData:
+                    type: array
+                    items: {}
+                  enrolledInPointsProgram:
+                    type: boolean
+                    example: true
+                  leaderboardPosition:
+                    type: number
+                    example: 29002
+                  referredUsersCount:
+                    type: number
+                    example: 0
+        "401":
+          description: Unauthorized - Authentication required
+        "404":
+          description: Profile not found
+      tags:
+        - Profile
       security:
         - bearer: []
         - limitless_session: []

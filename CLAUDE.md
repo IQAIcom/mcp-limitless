@@ -25,19 +25,21 @@ This is an MCP (Model Context Protocol) server for Limitless, a prediction marke
    - Each tool wraps a service and handles error cases
    - Tools are registered in `src/index.ts`
 
-### Available MCP Tools (27 Total)
+### Available MCP Tools (30 Total)
 
-#### Authentication (4 tools)
+#### Authentication (5 tools)
+- **GET_AUTH_STATUS**: Check current authentication status and get session information
 - **GET_SIGNING_MESSAGE**: Get a signing message with nonce for wallet authentication
 - **VERIFY_AUTH**: Verify if the user is authenticated
 - **LOGIN**: Authenticate a user with a signed message and create a session
 - **LOGOUT**: Log out the user by clearing the session cookie
 
-#### Market Discovery & Information (12 tools)
+#### Market Discovery & Information (13 tools)
 - **SEARCH_MARKETS**: Search for prediction markets using semantic similarity
 - **GET_MARKET**: Get detailed information about a specific market by slug or address
 - **GET_ACTIVE_MARKETS**: Browse active (unresolved) markets with optional filtering
 - **GET_ACTIVE_MARKETS_BY_CATEGORY**: Browse active markets filtered by category ID
+- **GET_CATEGORIES**: Get all available categories with IDs, names, priorities, and metadata
 - **GET_CATEGORIES_COUNT**: Get the number of active markets for each category
 - **GET_ACTIVE_SLUGS**: Get slugs, strike prices, tickers, and deadlines for all active markets
 - **GET_MARKET_ORDERBOOK**: View current orderbook with bids and asks
@@ -47,13 +49,14 @@ This is an MCP (Model Context Protocol) server for Limitless, a prediction marke
 - **GET_LOCKED_BALANCE**: Get funds locked in open orders (requires authentication)
 - **GET_USER_ORDERS**: Get all user orders for a specific market (requires authentication)
 
-#### Portfolio Management (7 tools)
+#### Portfolio Management (8 tools)
 - **GET_PORTFOLIO_POSITIONS**: Get user portfolio positions with P&L calculations (requires authentication)
 - **GET_PORTFOLIO_TRADES**: Retrieve all trades executed by the user (requires authentication)
 - **GET_PORTFOLIO_HISTORY**: Get paginated history including AMM/CLOB trades, splits/merges (requires authentication)
 - **GET_PORTFOLIO_POINTS**: Get points breakdown for the user (requires authentication)
 - **GET_USER_TRADED_VOLUME**: Get total traded volume for a specific user address (public)
 - **GET_PUBLIC_USER_POSITIONS**: Get all positions for a specific user address (public)
+- **GET_USER_PROFILE**: Get detailed profile information including username, rank, points, and leaderboard position for any user address (requires authentication)
 - **GET_TRADING_ALLOWANCE**: Check USDC allowance for CLOB or NegRisk trading (requires authentication)
 
 #### Trading & Order Management (4 tools)
@@ -117,6 +120,7 @@ The full Limitless API specification is available in `limitless-api.yaml`. All i
 - `GET /markets/{addressOrSlug}` - Market details
 - `GET /markets/active` - Browse active markets
 - `GET /markets/active/{categoryId}` - Browse active markets by category
+- `GET /categories` - Get all categories with metadata
 - `GET /markets/categories/count` - Get active market count per category
 - `GET /markets/active/slugs` - Get active market slugs with metadata
 - `GET /markets/{slug}/orderbook` - Market orderbook
@@ -134,6 +138,9 @@ The full Limitless API specification is available in `limitless-api.yaml`. All i
 - `GET /portfolio/{account}/traded-volume` - User total volume (public)
 - `GET /portfolio/{account}/positions` - Get all user positions (public)
 - `GET /portfolio/trading/allowance` - Get user trading allowance (auth required)
+
+### Profile Endpoints
+- `GET /profiles/{address}` - Get user profile information (auth required)
 
 ### Order Endpoints
 - `POST /orders` - Create order (auth required)

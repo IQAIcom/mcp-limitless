@@ -16,6 +16,7 @@ import { getActiveMarketsByCategoryTool } from "./tools/get-active-markets-by-ca
 import { getActiveMarketsTool } from "./tools/get-active-markets.js";
 import { getActiveSlugsTool } from "./tools/get-active-slugs.js";
 import { getAuthStatusTool } from "./tools/get-auth-status.js";
+import { getCategoriesTool } from "./tools/get-categories.js";
 import { getCategoriesCountTool } from "./tools/get-categories-count.js";
 import { getFeedEventsTool } from "./tools/get-feed-events.js";
 import { getHistoricalPriceTool } from "./tools/get-historical-price.js";
@@ -31,6 +32,7 @@ import { getPortfolioTradesTool } from "./tools/get-portfolio-trades.js";
 import { getPublicUserPositionsTool } from "./tools/get-public-user-positions.js";
 import { getTradingAllowanceTool } from "./tools/get-trading-allowance.js";
 import { getUserOrdersTool } from "./tools/get-user-orders.js";
+import { getUserProfileTool } from "./tools/get-user-profile.js";
 import { getUserTradedVolumeTool } from "./tools/get-user-traded-volume.js";
 import { searchMarketsTool } from "./tools/search-markets.js";
 
@@ -54,6 +56,7 @@ async function main() {
 	server.addTool(getMarketTool);
 	server.addTool(getActiveMarketsTool);
 	server.addTool(getActiveMarketsByCategoryTool);
+	server.addTool(getCategoriesTool);
 	server.addTool(getCategoriesCountTool);
 	server.addTool(getActiveSlugsTool);
 	server.addTool(getMarketOrderbookTool);
@@ -70,6 +73,7 @@ async function main() {
 	server.addTool(getPortfolioPointsTool);
 	server.addTool(getUserTradedVolumeTool);
 	server.addTool(getPublicUserPositionsTool);
+	server.addTool(getUserProfileTool);
 	server.addTool(getTradingAllowanceTool);
 
 	// Order Management Tools
@@ -94,32 +98,32 @@ async function main() {
 		);
 		logger.info("      - Check status anytime with GET_AUTH_STATUS tool");
 		logger.info("");
-		logger.info("   Total Available Tools: 28");
+		logger.info("   Total Available Tools: 30");
 		logger.info("");
 		logger.info("   📝 Authentication (5):");
 		logger.info(
 			"      - GET_AUTH_STATUS, GET_SIGNING_MESSAGE, VERIFY_AUTH, LOGIN, LOGOUT",
 		);
 		logger.info("");
-		logger.info("   📊 Markets (12):");
+		logger.info("   📊 Markets (13):");
 		logger.info(
 			"      - SEARCH_MARKETS, GET_MARKET, GET_ACTIVE_MARKETS, GET_ACTIVE_MARKETS_BY_CATEGORY",
 		);
 		logger.info(
-			"      - GET_CATEGORIES_COUNT, GET_ACTIVE_SLUGS, GET_MARKET_ORDERBOOK, GET_HISTORICAL_PRICE",
+			"      - GET_CATEGORIES, GET_CATEGORIES_COUNT, GET_ACTIVE_SLUGS, GET_MARKET_ORDERBOOK",
 		);
 		logger.info(
-			"      - GET_FEED_EVENTS, GET_MARKET_EVENTS, GET_LOCKED_BALANCE, GET_USER_ORDERS",
+			"      - GET_HISTORICAL_PRICE, GET_FEED_EVENTS, GET_MARKET_EVENTS, GET_LOCKED_BALANCE, GET_USER_ORDERS",
 		);
 		logger.info("");
-		logger.info("   💼 Portfolio (7):");
+		logger.info("   💼 Portfolio (8):");
 		logger.info(
 			"      - GET_PORTFOLIO_POSITIONS, GET_PORTFOLIO_TRADES, GET_PORTFOLIO_HISTORY",
 		);
 		logger.info(
 			"      - GET_PORTFOLIO_POINTS, GET_USER_TRADED_VOLUME, GET_PUBLIC_USER_POSITIONS",
 		);
-		logger.info("      - GET_TRADING_ALLOWANCE");
+		logger.info("      - GET_USER_PROFILE, GET_TRADING_ALLOWANCE");
 		logger.info("");
 		logger.info("   🔄 Trading (4):");
 		logger.info(
