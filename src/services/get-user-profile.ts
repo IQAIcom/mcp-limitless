@@ -65,6 +65,7 @@ export class GetUserProfileService {
 
 		lines.push("=== USER PROFILE ===\n");
 		lines.push(`Address: ${profile.account}`);
+		lines.push(`Id: ${profile.id}`);
 		lines.push(`Username: ${profile.username}`);
 
 		if (profile.displayName && profile.displayName !== profile.username) {
