@@ -1,12 +1,112 @@
-# Limitless MCP Server
+# 🎯 Limitless MCP Server
 
 [![npm version](https://img.shields.io/npm/v/@iqai/mcp-limitless.svg)](https://www.npmjs.com/package/@iqai/mcp-limitless)
 [![CI](https://github.com/IQAIcom/mcp-limitless/actions/workflows/ci.yml/badge.svg)](https://github.com/IQAIcom/mcp-limitless/actions/workflows/ci.yml)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
-A Model Context Protocol (MCP) server for interacting with [Limitless](https://limitless.exchange) prediction markets. This server provides tools for market discovery, portfolio management, and trading, enabling AI agents to interact with prediction markets seamlessly.
+## 📖 Overview
 
-## Features
+The Limitless MCP Server enables AI agents to interact with [Limitless](https://limitless.exchange) prediction markets. This server provides comprehensive tools for market discovery, portfolio management, and trading, enabling AI agents to interact with prediction markets seamlessly.
+
+By implementing the Model Context Protocol (MCP), this server allows Large Language Models (LLMs) to discover prediction markets, execute trades, manage portfolios, and track market activity directly through their context window, bridging the gap between AI and decentralized prediction markets.
+
+## ✨ Features
+
+*   **Market Discovery**: Search and filter prediction markets by category, keywords, and activity.
+*   **Real-time Pricing**: Access live price data, order books, and historical price information.
+*   **Portfolio Tracking**: Monitor user positions, trade history, points, and P&L calculations.
+*   **Trading**: Create, cancel, and manage orders for prediction market positions.
+*   **Authentication**: Secure wallet-based authentication with session management.
+
+## 📦 Installation
+
+### 🚀 Using npx (Recommended)
+
+To use this server without installing it globally:
+
+```bash
+npx @iqai/mcp-limitless
+```
+
+### 🔧 Build from Source
+
+```bash
+git clone https://github.com/IQAIcom/mcp-limitless
+cd mcp-limitless
+pnpm install
+pnpm run build
+```
+
+## ⚡ Running with an MCP Client
+
+Add the following configuration to your MCP client settings (e.g., `claude_desktop_config.json`).
+
+### 📋 Minimal Configuration
+
+```json
+{
+  "mcpServers": {
+    "limitless": {
+      "command": "npx",
+      "args": ["@iqai/mcp-limitless"]
+    }
+  }
+}
+```
+
+No API key required for read-only operations. Authentication is handled via wallet signature for trading.
+
+### ⚙️ Advanced Configuration (Local Build)
+
+```json
+{
+  "mcpServers": {
+    "limitless": {
+      "command": "node",
+      "args": ["/absolute/path/to/mcp-limitless/dist/index.js"]
+    }
+  }
+}
+```
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+## 🔐 Configuration (Environment Variables)
+
+| Variable | Required | Description | Default |
+| :--- | :--- | :--- | :--- |
+| None | - | No environment variables required for read-only operations | - |
+
+Authentication is handled via wallet signature flow (GET_SIGNING_MESSAGE → LOGIN).
+
+## 💡 Usage Examples
+
+### 🔍 Market Discovery
+*   "What prediction markets are currently active on Limitless?"
+*   "Search for crypto-related markets"
+*   "Show me the top markets by volume"
+*   "Get the order book for the Bitcoin $100k market"
+
+### 📊 Analytics & Pricing
+*   "Get the historical price data for this market"
+*   "Show me the current orderbook with bids and asks"
+*   "What are the feed events for this market?"
+
+### 💼 Portfolio Management
+*   "Show me my portfolio positions"
+*   "What's my P&L on open positions?"
+*   "List my recent trades"
+*   "Check my points breakdown"
+
+### 💰 Trading
+*   "Place a buy order for 50 shares at 60 cents"
+*   "Cancel all my orders in this market"
+*   "Show me my open orders"
+
+## 🛠️ MCP Tools
+
+<!-- AUTO-GENERATED TOOLS START -->
 
 ### Authentication Tools (5 tools)
 - **GET_AUTH_STATUS**: Check current authentication status
@@ -46,152 +146,9 @@ A Model Context Protocol (MCP) server for interacting with [Limitless](https://l
 - **CANCEL_ORDER_BATCH**: Cancel multiple orders in a single batch operation
 - **CANCEL_ALL_ORDERS**: Cancel all user orders in a specific market
 
-## Quick Start
+<!-- AUTO-GENERATED TOOLS END -->
 
-### Using with npx (Recommended)
-
-The easiest way to use this MCP server is with `npx`:
-
-```json
-{
-  "mcpServers": {
-    "limitless": {
-      "command": "npx",
-      "args": ["@iqai/mcp-limitless"]
-    }
-  }
-}
-```
-
-No API key required for read-only operations. Authentication is handled via wallet signature for trading.
-
-### Manual Installation (For Development)
-
-```bash
-git clone https://github.com/IQAIcom/mcp-limitless
-cd mcp-limitless
-pnpm install
-pnpm run build
-```
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| None | - | No environment variables required for read-only operations |
-
-Authentication is handled via wallet signature flow (GET_SIGNING_MESSAGE → LOGIN).
-
-### For Claude Desktop
-
-Add to your Claude Desktop configuration:
-
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "limitless": {
-      "command": "node",
-      "args": ["/absolute/path/to/mcp-limitless/dist/index.js"]
-    }
-  }
-}
-```
-
-## How It Works
-
-This MCP server acts as a bridge between AI assistants and the Limitless prediction market API:
-
-```
-┌─────────────────┐
-│   MCP Client    │  ← AI Assistant (Claude, IDE extensions, etc.)
-│   (Claude AI)   │
-└────────┬────────┘
-         │ Tool Calls (standardized MCP protocol)
-         ▼
-┌─────────────────┐
-│  MCP Server     │  ← This project
-│  ┌────────────┐ │
-│  │ 30 Tools   │ │  ← Search markets, create orders, etc.
-│  │ Session    │ │  ← Automatic cookie-based authentication
-│  │ Manager    │ │  ← Persists login across requests
-│  └────────────┘ │
-└────────┬────────┘
-         │ HTTP/REST API calls (with automatic cookies)
-         ▼
-┌─────────────────┐
-│ Limitless API   │  ← Limitless Exchange backend
-│ api.limitless   │
-│    .exchange    │
-└─────────────────┘
-```
-
-**Key Features:**
-- **Automatic Session Management**: Login once, stay authenticated for the entire session
-- **No API Keys Required**: Uses wallet signature authentication
-- **Type-Safe**: Full TypeScript with Zod schema validation
-- **Browser-Like UX**: Cookies handled automatically using `tough-cookie`
-
-## Usage Examples
-
-### Sample Questions for AI Agents
-
-**Market Discovery:**
-- "What prediction markets are currently active on Limitless?"
-- "Search for crypto-related markets"
-- "Show me the top markets by volume"
-- "Get the order book for the Bitcoin $100k market"
-
-**Portfolio Management:**
-- "Show me my portfolio positions"
-- "What's my P&L on open positions?"
-- "List my recent trades"
-
-**Trading:**
-- "Place a buy order for 50 shares at 60 cents"
-- "Cancel all my orders in this market"
-- "Show me my open orders"
-
-### Conversation Example
-
-```
-You: "Show me the top 5 crypto prediction markets on Limitless"
-
-Claude: [Uses SEARCH_MARKETS tool]
-→ Here are the top 5 crypto markets:
-  1. Will Bitcoin reach $100k in 2025? (75% YES)
-  2. Will Ethereum surpass $5000? (62% YES)
-  ...
-
-You: "Check if I'm logged into Limitless"
-
-Claude: [Uses GET_AUTH_STATUS tool]
-→ You're not currently authenticated. Would you like to log in?
-
-You: "Yes, log me in. My address is 0x742d35Cc..."
-
-Claude: [Uses GET_SIGNING_MESSAGE tool]
-→ Please sign this message with your wallet:
-  "Welcome to Limitless.exchange!..."
-
-You: "Here's my signature: 0xabc123..."
-
-Claude: [Uses LOGIN tool]
-→ ✅ Successfully logged in as 0x742d35Cc...
-
-You: "Show me my portfolio positions"
-
-Claude: [Uses GET_PORTFOLIO_POSITIONS tool]
-→ 💼 Your Portfolio:
-  1. Bitcoin $100k (YES) - 100 shares @ $0.65
-     Current: $0.75 | P&L: +$10.00 (+15.38%)
-```
-
-## Authentication
+## 🔐 Authentication
 
 Many tools require authentication. This server implements **automatic session management** using HTTP cookies, just like a web browser.
 
@@ -252,25 +209,19 @@ Step 5: Use Authenticated Tools
 - GET_SIGNING_MESSAGE
 - GET_AUTH_STATUS
 
-## API Documentation
+## 👨‍💻 Development
 
-This server uses the Limitless API:
-- **Base URL**: `https://api.limitless.exchange`
-- [Limitless Exchange](https://limitless.exchange/)
-
-## Development
-
-### Build
+### 🏗️ Build Project
 ```bash
 pnpm run build
 ```
 
-### Development Mode
+### 👁️ Development Mode (Watch)
 ```bash
 pnpm run watch
 ```
 
-### Run Tests
+### 🧪 Run Tests
 ```bash
 pnpm test:unit           # Run unit tests
 pnpm test:watch          # Watch mode
@@ -278,64 +229,39 @@ pnpm test:coverage       # Generate coverage report
 pnpm test:integration    # Run integration tests
 ```
 
-### Linting and Formatting
+### ✅ Linting & Formatting
 ```bash
 pnpm run lint
 pnpm run format
 ```
 
-## Project Structure
+### 📁 Project Structure
+*   `src/tools/`: Individual tool definitions
+*   `src/services/`: API client and business logic
+*   `src/lib/`: Shared utilities (HTTP client, session manager, logger)
+*   `src/index.ts`: Server entry point
+*   `tests/`: Unit and integration tests
 
-```
-mcp-limitless/
-├── src/
-│   ├── lib/
-│   │   ├── client.ts          # HTTP client
-│   │   ├── session-manager.ts # Cookie-based session management
-│   │   └── logger.ts          # Winston logger
-│   ├── services/
-│   │   ├── search-markets.ts
-│   │   ├── get-market.ts
-│   │   ├── get-portfolio-positions.ts
-│   │   └── ...                # One service per tool
-│   ├── tools/
-│   │   ├── search-markets.ts
-│   │   ├── get-market.ts
-│   │   └── ...                # One tool definition per feature
-│   └── index.ts               # MCP server entry point
-├── tests/
-│   ├── unit/                  # Unit tests
-│   └── integration/           # Integration tests
-├── dist/                      # Compiled output
-├── package.json
-└── README.md
-```
+## 📚 Resources
 
-## Technologies
+*   [Limitless Exchange](https://limitless.exchange/)
+*   [Limitless API](https://api.limitless.exchange)
+*   [Model Context Protocol (MCP)](https://modelcontextprotocol.io)
 
-- **TypeScript**: Type-safe development
-- **fastmcp**: MCP server implementation
-- **tough-cookie**: Cookie management for session persistence
-- **fetch-cookie**: HTTP client with automatic cookie handling
-- **Winston**: Logging
-- **Zod**: Parameter validation
-- **Biome**: Linting and formatting
-- **Vitest**: Testing framework
+## ⚠️ Disclaimer
 
-## Disclaimer
+This project is an unofficial tool and is not directly affiliated with Limitless. It interacts with financial and prediction market data. Users should exercise caution and verify all data independently. Trading in prediction markets involves risk.
 
-This is an unofficial tool and is not affiliated with Limitless. Use at your own risk. Always verify transactions and understand the risks involved in prediction market trading.
-
-## Related Projects
+## 🔗 Related Projects
 
 - [Polymarket MCP](https://github.com/IQAIcom/mcp-polymarket) - MCP server for Polymarket
 - [Kalshi MCP](https://github.com/IQAIcom/mcp-kalshi) - MCP server for Kalshi
 - [Opinion MCP](https://github.com/IQAIcom/mcp-opinion) - MCP server for Opinion
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](.github/CONTRIBUTING.md) for details.
 
-## License
+## 📄 License
 
-ISC
+[ISC](LICENSE)
