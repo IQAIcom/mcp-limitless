@@ -1,5 +1,15 @@
 # mcp-limitless
 
+## 0.0.5
+
+### Patch Changes
+
+- 96d936c: Upgrade fastmcp to 3.30.1 to fix "Server does not support completions" error
+- 12b9d67: Fix integration test failures:
+  - Handle null values for lastTradePrice and adjustedMidpoint in orderbook API response
+  - Update search-markets to use `title` field instead of `question` to match API schema
+  - Fix test timeout configuration in get-feed-events integration tests
+
 ## 0.0.4
 
 ### Patch Changes
