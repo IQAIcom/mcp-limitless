@@ -7,10 +7,10 @@ interface Order {
 }
 
 interface OrderbookResponse {
-	adjustedMidpoint: number;
+	adjustedMidpoint: number | null;
 	asks: Order[];
 	bids: Order[];
-	lastTradePrice: number;
+	lastTradePrice: number | null;
 	maxSpread: number | string; // Can be string or number
 	minSize: number;
 	tokenId: string;
@@ -57,11 +57,20 @@ export class GetMarketOrderbookService {
 				? Number.parseFloat(orderbook.maxSpread)
 				: orderbook.maxSpread;
 
+		const lastTradePrice =
+			orderbook.lastTradePrice !== null
+				? orderbook.lastTradePrice.toFixed(4)
+				: "N/A";
+		const adjustedMidpoint =
+			orderbook.adjustedMidpoint !== null
+				? orderbook.adjustedMidpoint.toFixed(4)
+				: "N/A";
+
 		const formattedOrderbook = dedent`
 			📊 Market Orderbook
 
-			Last Trade Price: ${orderbook.lastTradePrice.toFixed(4)}
-			Adjusted Midpoint: ${orderbook.adjustedMidpoint.toFixed(4)}
+			Last Trade Price: ${lastTradePrice}
+			Adjusted Midpoint: ${adjustedMidpoint}
 			Max Spread: ${maxSpread.toFixed(4)}
 			Min Size: ${orderbook.minSize}
 

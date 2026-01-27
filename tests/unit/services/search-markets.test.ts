@@ -161,7 +161,7 @@ describe("SearchMarketsService", () => {
 			const responseWithMissingFields = {
 				markets: [
 					{
-						question: "Test market?",
+						title: "Test market?",
 						slug: "test-market",
 					},
 				],

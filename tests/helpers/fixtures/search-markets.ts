@@ -5,7 +5,7 @@
 export const searchMarketsSuccessResponse = {
 	markets: [
 		{
-			question: "Will Bitcoin reach $100,000 by end of 2024?",
+			title: "Will Bitcoin reach $100,000 by end of 2024?",
 			slug: "bitcoin-100k-2024",
 			category: "Crypto",
 			volume: "125000",
@@ -13,7 +13,7 @@ export const searchMarketsSuccessResponse = {
 			endDate: "2024-12-31T23:59:59Z",
 		},
 		{
-			question: "Will Ethereum complete the merge successfully?",
+			title: "Will Ethereum complete the merge successfully?",
 			slug: "ethereum-merge-success",
 			category: "Crypto",
 			volume: "85000",
@@ -36,7 +36,7 @@ export const searchMarketsEmptyResponse = {
 export const searchMarketsPaginatedResponse = {
 	markets: [
 		{
-			question: "Will AI surpass human intelligence by 2030?",
+			title: "Will AI surpass human intelligence by 2030?",
 			slug: "ai-agi-2030",
 			category: "Technology",
 			volume: "200000",
