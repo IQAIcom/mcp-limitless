@@ -61,7 +61,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			getIntegrationTestTimeout() * 2,
+			{ timeout: getIntegrationTestTimeout() * 2 },
 		);
 
 		it(
@@ -80,7 +80,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			getIntegrationTestTimeout() * 2,
+			{ timeout: getIntegrationTestTimeout() * 2 },
 		);
 
 		it(
@@ -99,7 +99,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			getIntegrationTestTimeout() * 2,
+			{ timeout: getIntegrationTestTimeout() * 2 },
 		);
 
 		it(
@@ -117,7 +117,7 @@ describe.skipIf(!shouldRunIntegrationTests())(
 
 				await rateLimitDelay();
 			},
-			getIntegrationTestTimeout(),
+			{ timeout: getIntegrationTestTimeout() },
 		);
 	},
 );

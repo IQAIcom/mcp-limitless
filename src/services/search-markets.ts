@@ -2,7 +2,7 @@ import dedent from "dedent";
 import { client } from "../lib/client.js";
 
 interface Market {
-	question: string;
+	title: string;
 	slug: string;
 	category?: string;
 	volume?: string;
@@ -60,7 +60,7 @@ export class SearchMarketsService {
 
 		const formattedMarkets = response.markets.map((market: Market) => {
 			return dedent`
-                🎯 ${market.question}
+                🎯 ${market.title}
                 - Slug: ${market.slug}
                 ${market.category ? `- Category: ${market.category}` : ""}
                 ${market.volume ? `- Volume: $${market.volume}` : ""}
