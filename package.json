@@ -7,9 +7,7 @@
 	"bin": {
 		"mcp-limitless": "dist/index.js"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"scripts": {
 		"build": "tsc && shx chmod +x dist/index.js",
 		"prepare": "husky",
@@ -39,12 +37,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"keywords": [
-		"mcp",
-		"limitless",
-		"prediction-markets",
-		"trading"
-	],
+	"keywords": ["mcp", "limitless", "prediction-markets", "trading"],
 	"dependencies": {
 		"dedent": "^1.6.0",
 		"fastmcp": "^3.30.1",
