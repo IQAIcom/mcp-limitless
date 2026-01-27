@@ -16,8 +16,8 @@ import { getActiveMarketsByCategoryTool } from "./tools/get-active-markets-by-ca
 import { getActiveMarketsTool } from "./tools/get-active-markets.js";
 import { getActiveSlugsTool } from "./tools/get-active-slugs.js";
 import { getAuthStatusTool } from "./tools/get-auth-status.js";
-import { getCategoriesTool } from "./tools/get-categories.js";
 import { getCategoriesCountTool } from "./tools/get-categories-count.js";
+import { getCategoriesTool } from "./tools/get-categories.js";
 import { getFeedEventsTool } from "./tools/get-feed-events.js";
 import { getHistoricalPriceTool } from "./tools/get-historical-price.js";
 import { getLockedBalanceTool } from "./tools/get-locked-balance.js";

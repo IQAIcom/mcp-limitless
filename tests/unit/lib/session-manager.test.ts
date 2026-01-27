@@ -1,6 +1,6 @@
+import type { CookieJar } from "tough-cookie";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SessionManager } from "../../../src/lib/session-manager.js";
-import type { CookieJar } from "tough-cookie";
 
 // Mock fetch-cookie
 vi.mock("fetch-cookie", () => ({
