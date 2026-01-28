@@ -11,6 +11,8 @@ permissions:
 jobs:
   sync-tools:
     runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
 
     steps:
       - name: Checkout repo
@@ -25,7 +27,7 @@ jobs:
         run: |
           if [ -f pnpm-lock.yaml ]; then
             corepack enable
-            pnpm install --frozen-lockfile
+            pnpm install
           else
             npm install
           fi
@@ -33,15 +35,15 @@ jobs:
       - name: Generate MCP tool documentation
         run: npx tsx .github/actions/generate-mcp-tools/generate-tools.mjs
 
-      - name: Commit README changes
+      - name: Commit changes
         run: |
-          if git diff --quiet; then
-            echo "No README changes"
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes"
             exit 0
           fi
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add README.md
-          git commit -m "chore: auto-sync MCP tool documentation"
+          git add README.md pnpm-lock.yaml
+          git diff --cached --quiet || git commit -m "chore: auto-sync MCP tool documentation"
           git push
