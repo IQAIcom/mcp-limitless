@@ -108,43 +108,222 @@ Authentication is handled via wallet signature flow (GET_SIGNING_MESSAGE → LOG
 
 <!-- AUTO-GENERATED TOOLS START -->
 
-### Authentication Tools (5 tools)
-- **GET_AUTH_STATUS**: Check current authentication status
-- **GET_SIGNING_MESSAGE**: Get a signing message with nonce for wallet authentication
-- **VERIFY_AUTH**: Verify if the user is authenticated
-- **LOGIN**: Authenticate a user with a signed message and create a session
-- **LOGOUT**: Log out the user by clearing the session cookie
+### `CANCEL_ALL_ORDERS`
+Cancel all of a user's open orders in a specific market on Limitless. Requires authentication.
 
-### Market Data Tools (13 tools)
-- **SEARCH_MARKETS**: Search for prediction markets using semantic similarity
-- **GET_MARKET**: Get detailed information about a specific market by slug or address
-- **GET_ACTIVE_MARKETS**: Browse active (unresolved) markets with optional filtering
-- **GET_ACTIVE_MARKETS_BY_CATEGORY**: Browse active markets filtered by category ID
-- **GET_CATEGORIES**: Get all available categories
-- **GET_CATEGORIES_COUNT**: Get the number of active markets for each category
-- **GET_ACTIVE_SLUGS**: Get slugs, strike prices, tickers, and deadlines for all active markets
-- **GET_MARKET_ORDERBOOK**: View current orderbook with bids and asks
-- **GET_HISTORICAL_PRICE**: Retrieve historical price data with configurable time intervals
-- **GET_FEED_EVENTS**: Get the latest feed events for a specific market
-- **GET_MARKET_EVENTS**: Get recent market events including trades and orders
-- **GET_LOCKED_BALANCE**: Get funds locked in open orders (requires authentication)
-- **GET_USER_ORDERS**: Get all user orders for a specific market (requires authentication)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug to cancel all user orders in |
 
-### Portfolio Tools (8 tools)
-- **GET_PORTFOLIO_POSITIONS**: Get user portfolio positions with P&L calculations
-- **GET_PORTFOLIO_TRADES**: Retrieve all trades executed by the user
-- **GET_PORTFOLIO_HISTORY**: Get paginated history including AMM/CLOB trades, splits/merges
-- **GET_PORTFOLIO_POINTS**: Get points breakdown for the user
-- **GET_USER_TRADED_VOLUME**: Get total traded volume for a specific user address (public)
-- **GET_PUBLIC_USER_POSITIONS**: Get all positions for a specific user address (public)
-- **GET_USER_PROFILE**: Get detailed user profile information
-- **GET_TRADING_ALLOWANCE**: Check USDC allowance for CLOB or NegRisk trading
+### `CANCEL_ORDER`
+Cancel an open order on Limitless and return locked funds. Requires authentication and order ownership.
 
-### Trading Tools (4 tools)
-- **CREATE_ORDER**: Create a buy or sell order for prediction market positions
-- **CANCEL_ORDER**: Cancel a specific open order by order ID
-- **CANCEL_ORDER_BATCH**: Cancel multiple orders in a single batch operation
-- **CANCEL_ALL_ORDERS**: Cancel all user orders in a specific market
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `orderId` | string | ✅ | Unique identifier of the order to be cancelled |
+
+### `CANCEL_ORDER_BATCH`
+Cancel multiple orders in a single batch operation on Limitless. All orders must be from the same market. Requires authentication and order ownership.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `orderIds` | array | ✅ | Array of order IDs to be cancelled in a single batch operation |
+
+### `CREATE_ORDER`
+Create a buy or sell order for prediction market positions on Limitless. Requires signed order data and authentication. Returns order details and match information if filled immediately.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `order` | object | ✅ | Order details including signature and amounts |
+| `ownerId` | number | ✅ | Profile ID of the order owner |
+| `orderType` | string | ✅ | Order type (GTC=Good Till Cancelled, FOK=Fill Or Kill) |
+| `marketSlug` | string | ✅ | Market identifier slug |
+
+### `GET_ACTIVE_MARKETS`
+Browse active (unresolved) prediction markets on Limitless. Returns markets with volume, liquidity, and other trading data. Supports filtering by category and sorting.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `categoryId` | number |  | Filter by category ID (optional) |
+| `page` | number |  | Page number for pagination (default: 1) |
+| `limit` | number |  | Number of results per page (default: 10) |
+| `sortBy` | string |  | Sort order: newest, oldest, volume, liquidity (default: newest) |
+
+### `GET_ACTIVE_MARKETS_BY_CATEGORY`
+Browse active (unresolved) markets filtered by category ID with optional pagination and sorting.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `categoryId` | number | ✅ | Category ID to filter markets by |
+| `page` | number |  | Page number for pagination |
+| `limit` | number |  | Number of items per page |
+| `sortBy` | string |  | Sort order (e.g., newest, volume) |
+
+### `GET_ACTIVE_SLUGS`
+Get slugs, strike prices, tickers, and deadlines for all active markets and groups. Useful for discovering available markets.
+
+_No parameters_
+
+### `GET_AUTH_STATUS`
+Check the current authentication status for the Limitless API session. Returns whether you're logged in and your Ethereum address. Session persists automatically across all tool calls.
+
+_No parameters_
+
+### `GET_CATEGORIES`
+Get all available categories on Limitless with their IDs, names, priorities, and metadata. Use this to discover available categories for filtering markets.
+
+_No parameters_
+
+### `GET_CATEGORIES_COUNT`
+Get the number of active markets for each category and the total market count.
+
+_No parameters_
+
+### `GET_FEED_EVENTS`
+Get the latest feed events related to a specific market with pagination support.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug identifier |
+| `page` | number |  | Page number for pagination |
+| `limit` | number |  | Number of events per page |
+
+### `GET_HISTORICAL_PRICE`
+Retrieve historical price data for a specific market with configurable time intervals. Useful for analyzing price trends.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug identifier |
+| `from` | string |  | Start date for historical data (ISO 8601 format) |
+| `to` | string |  | End date for historical data (ISO 8601 format) |
+| `interval` | string |  | Time interval for data points |
+
+### `GET_LOCKED_BALANCE`
+Get the amount of funds locked in open orders for the authenticated user in a specific market. Requires authentication.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug identifier |
+
+### `GET_MARKET`
+Get detailed information about a specific prediction market on Limitless. Provides market question, outcomes, prices, volume, liquidity, and other trading data.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `addressOrSlug` | string | ✅ | Market address (0x...) or slug identifier (e.g., crypto-predictions-2025) |
+
+### `GET_MARKET_EVENTS`
+Get recent events for a specific market including trades, orders, and liquidity changes.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug identifier |
+| `page` | number |  | Page number for pagination |
+| `limit` | number |  | Number of events per page |
+
+### `GET_MARKET_ORDERBOOK`
+Get the current orderbook for a prediction market on Limitless. Shows all open buy (bids) and sell (asks) orders with prices and sizes.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug identifier (e.g., presidential-election-2024) |
+
+### `GET_PORTFOLIO_HISTORY`
+Get paginated history including AMM trades, CLOB trades, splits/merges, and NegRisk conversions. Requires authentication.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | ✅ | Page number for pagination |
+| `limit` | number | ✅ | Number of items per page |
+| `from` | string |  | Start date for filtering (ISO 8601 format) |
+| `to` | string |  | End date for filtering (ISO 8601 format) |
+
+### `GET_PORTFOLIO_POINTS`
+Get points breakdown for the authenticated user. Requires authentication.
+
+_No parameters_
+
+### `GET_PORTFOLIO_POSITIONS`
+Get your active portfolio positions on Limitless with P&L calculations and market values. Requires authentication via session token.
+
+_No parameters_
+
+### `GET_PORTFOLIO_TRADES`
+Retrieve all trades executed by the authenticated user. Requires authentication.
+
+_No parameters_
+
+### `GET_PUBLIC_USER_POSITIONS`
+Get all positions for a specific user address. This is a public endpoint that doesn't require authentication.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `account` | string | ✅ | User Ethereum address |
+
+### `GET_SIGNING_MESSAGE`
+Get a signing message with a randomly generated nonce for authentication purposes. Use this before logging in. Requires a wallet address.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `address` | string | ✅ | The wallet address to get a signing message for |
+
+### `GET_TRADING_ALLOWANCE`
+Check USDC allowance for CLOB or NegRisk trading contracts. Requires authentication.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | ✅ | Trading type: CLOB or NegRisk |
+
+### `GET_USER_ORDERS`
+Get all orders placed by the authenticated user for a specific market. Requires authentication.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `slug` | string | ✅ | Market slug identifier |
+
+### `GET_USER_PROFILE`
+Get detailed profile information for a user by their Ethereum address. Returns comprehensive user data including username, bio, profile picture, rank, points, leaderboard position, referral information, and account status. Requires authentication. Users can view their own profile when authenticated.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `address` | string | ✅ | The Ethereum address of the user whose profile to retrieve |
+
+### `GET_USER_TRADED_VOLUME`
+Get total traded volume and statistics for a specific user. This is a public endpoint that doesn't require authentication.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `account` | string | ✅ | User Ethereum address |
+
+### `LOGIN`
+Authenticate a user with a signed message and create a session. First get a signing message, sign it with your wallet, then call this with the signature.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `account` | string | ✅ | The Ethereum address of the user |
+| `signingMessage` | string | ✅ | The signing message generated by the server |
+| `signature` | string | ✅ | The signature generated by signing the message with the wallet |
+| `userData` | object | ✅ | User data to be stored |
+
+### `LOGOUT`
+Log out the user by clearing the session cookie. Requires authentication.
+
+_No parameters_
+
+### `SEARCH_MARKETS`
+Search for prediction markets on Limitless based on semantic similarity. Returns markets matching the search query with details like volume, liquidity, and end dates.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | ✅ | The search query for markets |
+| `limit` | number |  | Maximum number of results (default: 10) |
+| `page` | number |  | Page number for pagination (default: 1) |
+| `similarityThreshold` | number |  | Minimum similarity score 0-1 (default: 0.5) |
+
+### `VERIFY_AUTH`
+Verify if the user is authenticated by checking the session cookie. Returns the authenticated Ethereum address.
+
+_No parameters_
 
 <!-- AUTO-GENERATED TOOLS END -->
 
