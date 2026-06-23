@@ -27,8 +27,8 @@ importers:
         specifier: ^3.18.3
         version: 3.18.3
       zod:
-        specifier: ^3.25.7
-        version: 3.25.7
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@biomejs/biome':
         specifier: '*'
@@ -63,6 +63,9 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.0.3)(msw@2.11.6(@types/node@24.0.3)(typescript@5.8.3))(yaml@2.8.0)
+      zod-to-json-schema:
+        specifier: ^3.25.1
+        version: 3.25.1(zod@4.3.6)
 
 packages:
 
@@ -2387,9 +2390,6 @@ packages:
     peerDependencies:
       zod: ^3.25 || ^4
 
-  zod@3.25.7:
-    resolution: {integrity: sha512-YGdT1cVRmKkOg6Sq7vY7IkxdphySKnXhaUmFI4r4FcuFVNgpCb9tZfNwXbT6BPjD5oz0nubFsoo9pIqKrDcCvg==}
-
   zod@4.3.6:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
@@ -3457,7 +3457,7 @@ snapshots:
       strict-event-emitter-types: 2.0.0
       undici: 7.19.1
       uri-templates: 0.2.0
-      xsschema: 0.4.0-beta.5(zod-to-json-schema@3.25.1(zod@3.25.7))(zod@4.3.6)
+      xsschema: 0.4.0-beta.5(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
       yargs: 18.0.0
       zod: 4.3.6
       zod-to-json-schema: 3.25.1(zod@4.3.6)
@@ -4653,7 +4653,7 @@ snapshots:
 
   ws@8.17.1: {}
 
-  xsschema@0.4.0-beta.5(zod-to-json-schema@3.25.1(zod@3.25.7))(zod@4.3.6):
+  xsschema@0.4.0-beta.5(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6):
     optionalDependencies:
       zod: 4.3.6
       zod-to-json-schema: 3.25.1(zod@4.3.6)
@@ -4694,7 +4694,5 @@ snapshots:
   zod-to-json-schema@3.25.1(zod@4.3.6):
     dependencies:
       zod: 4.3.6
-
-  zod@3.25.7: {}
 
   zod@4.3.6: {}
